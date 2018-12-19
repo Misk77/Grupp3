@@ -155,6 +155,7 @@ public class HostingerMethods {
 			// Setup the connection with the DB
 
 			// connect to database
+			
 			connect = DriverManager.getConnection(dburl, user, pass);
 
 			System.out.println("DB connection successful to: " + dburl);
