@@ -7,7 +7,7 @@ public class HostingerMain {
 		HostingerMethods.menu(); // avmarkera denna ifall du ska testa metoden nedan
 	//	HostingerMethods.manuallyInsert();  // testar method direkt h�r
 
-		// Test från Johannes 
+		// Test från Johannes
 		
 		// END
 	}
