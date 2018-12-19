@@ -14,6 +14,10 @@ public class HostingerMain {
 
 }
 
+//*************************************
+// Test from Björn
+//*************************************
+
 
 /////////////////////////////////////////////////   VERISON  0.4 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //  -- TIPS Om ni vill testa era metoder script så kan det vara smart att ändra table namn så ändrar ni inget ifall andra testar samtidigt, samt så kör metoden direkt i main method så slipper ni menyn :)
