@@ -56,16 +56,16 @@ public class Db {
 		while (true) {
 			try {
 
-				System.out.println("|===============================|" + "\n|------  Database Menu -------|"
-						+ "\n|----------  BLackJack DATABASE Michel -----------|" + "\n|=============================|"
+				System.out.println("|=============================|" + "\n|------ Database Menu  -------|"
+						+ "\n|------  BLackJack DB  -------|" + "\n|=============================|"
 						+ "\n[1]-Create Database: " + "\n[2]-CREATE TABLE:  " + "\n[3]-Create players   "
 						+ "\n[4]-DESCRIBE BLackJack: " + "\n[5]-SELECT * FROM BLackJack: " + "\n[6]-Select Records "
 						+ "\n[7]-Check Update:  " + "\n[8]-Delete Records: " + "\n[9]-Drop Table: "
 						+ "\n[10]-manuallyInsertPlayer: " + "\n[11]- ???" + "\n[12]-TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT-INSERT INTO table: " + "\n[13]-????"
 						+ "\n[14]-????" + "\n[15]-Funkar ej !!! manually Insert" + "\n[0]-EXIT "
-						+ "\n|===================================|" + "\n|-----------------------------------|"
-						+ "\n|--------- Michel ----------|" + "\n|---- -------------------- ---------|"
-						+ "\n|===================================|");
+						+ "\n|=============================|" + "\n|-----------------------------|"
+						+ "\n|---------- Grupp3 -----------|" + "\n|----------------------------|"
+						+ "\n|=============================|");
 
 				System.out.println("What you wanna do? ");
 
@@ -512,25 +512,42 @@ public class Db {
 		
 		player p1 = new player();
 		player p2 = new player();
-		//player dealer = new player();
+		player dealer = new player();
 		
+		
+		
+		
+	
+		
+		// dealer  String p1Name=sc.next();
+		System.out.println("Dealer: set your name: ");
+		String dealerName=sc.next();
+		dealer.setName(dealerName);
+		
+		
+	
+		
+		
+		// player saldo
 		p1.saldo =0;
 		p2.saldo=0;
+		// player input
 		System.out.println("Player 1: set your name: ");
 		String p1Name=sc.next();
 		p1.setName(p1Name);
-		System.out.println(p1.getName()+" set your saldo: " +p1.getSaldo());
+		System.out.println(p1.getName()+"current balance: " +p1.getSaldo());
 		int p1Saldo=sc.nextInt();
 		p1.setSaldo(p1Saldo);
-		System.out.println(p1.getName()+" saldo is now: "+" " +p1.getSaldo());
+		System.out.println(p1.getName()+" updated balance now: "+" " +p1.getSaldo());
 		
 		System.out.println("Player 2: set your name: ");
 		String p2Name=sc.next();
 		p2.setName(p2Name);
-		System.out.println(p2.getName()+" set your saldo: " +p2.getSaldo());
+		System.out.println(p2.getName()+" current balance: " +p2.getSaldo());
 		int p2Saldo=sc.nextInt();
 		p2.setSaldo(p2Saldo);
-		System.out.println(p1.getName()+" saldo is now: "+" " +p2.getSaldo());
+		System.out.println(p1.getName()+" updated balance is now: "+" " +p2.getSaldo());
+		
 		
 		
 	
@@ -547,6 +564,9 @@ public class Db {
 			String sql = "insert into BlackJack VALUES  (default, ?,?)";
 			PreparedStatement preparedStatement1 = connect.prepareStatement(sql);
 			 
+			
+			
+			preparedStatement1.execute();
 			preparedStatement1.setString(1, p1.getName());
 			preparedStatement1.setLong(2, p1.getSaldo());
 			preparedStatement1.execute();
@@ -726,6 +746,7 @@ public class Db {
 				+ getP2() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
 				+ super.toString() + "]";
 	}
+
 
 	// END
 
