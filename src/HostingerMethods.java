@@ -207,8 +207,9 @@ public class HostingerMethods {
 			System.out.println("Creating table in given database...");
 			statement = connect.createStatement();
 
-			String sql = "create table IF NOT EXISTS books " + "   (id INT NOT NULL AUTO_INCREMENT,\r\n" +"category varchar(50),\r\n"+ "title varchar(50),\r\n"
-					+ "author varchar(50),\r\n" + "pages int,\r\n" + "price float,\r\n" + "quantity  int,\r\n"
+			String sql = "create table IF NOT EXISTS BlackJack " + " (id INT NOT NULL AUTO_INCREMENT,\r\n"
+			+"Player varchar(50),\r\n"+
+					 "saldo int,\r\n"
 					+ "   primary key (id))";
 
 			statement.executeUpdate(sql);
