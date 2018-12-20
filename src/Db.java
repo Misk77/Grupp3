@@ -11,17 +11,17 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Db {
-	private String name;
+	private String playerName;
 	private String dealer;
 	private int saldo;
 	private int menu;
-	
+
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null; // l�gga in preparedStatement
 	private ResultSet resultSet = null; // kanske on�dig???
 	private String books;
-	private String tableName = books; // gl�mde vad jag skulle ha den till hmm?
+	// private String tableName = books; // gl�mde vad jag skulle ha den till hmm?
 
 	// Scanner
 	Scanner sc = new Scanner(System.in);
@@ -44,28 +44,40 @@ public class Db {
 	 * user="u209758462_misk7"; private String dburl =
 	 * "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
 	 */
-	private String pass = "mi235277sk";
-	private String user = "u209758462_misk7";
-	private String dburl = "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
-	private player p2;
-	private player p1;
 
+	// Ta bort denna och testar local
+	
+	  private String pass = "mi235277sk"; 
+	 private String user = "u209758462_misk7";
+	  private String dburl =  "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?"; 
+	 private player p2;
+	  private player p1;
+	 
+
+	// testar loclas
+	/*
+	private String dburl = "jdbc:mysql://localhost/feedback?";
+	private String user = "root";
+	private String pass = "root";
+	
+*/
 	//// MENU STUFF manuallyInsert()
 	// METHOD MENU
-	void menu() {
+	public void menu() {
 		while (true) {
 			try {
 
-				System.out.println("|=============================|" + "\n|------ Database Menu  -------|"
-						+ "\n|------  BLackJack DB  -------|" + "\n|=============================|"
-						+ "\n[1]-Create Database: " + "\n[2]-CREATE TABLE:  " + "\n[3]-Create players   "
+				System.out.println("|===============================|" + "\n|------  Database Menu -------|"
+						+ "\n|----------  BLackJack DATABASE Michel -----------|" + "\n|=============================|"
+						+ "\n[1]-Create Database: " + "\n[2]-CREATE TABLE:  " + "\n[3]-Add players   "
 						+ "\n[4]-DESCRIBE BLackJack: " + "\n[5]-SELECT * FROM BLackJack: " + "\n[6]-Select Records "
 						+ "\n[7]-Check Update:  " + "\n[8]-Delete Records: " + "\n[9]-Drop Table: "
-						+ "\n[10]-manuallyInsertPlayer: " + "\n[11]- ???" + "\n[12]-TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT-INSERT INTO table: " + "\n[13]-????"
-						+ "\n[14]-????" + "\n[15]-Funkar ej !!! manually Insert" + "\n[0]-EXIT "
-						+ "\n|=============================|" + "\n|-----------------------------|"
-						+ "\n|---------- Grupp3 -----------|" + "\n|----------------------------|"
-						+ "\n|=============================|");
+						+ "\n[10]-playerInfo: " + "\n[11]- ???"
+						+ "\n[12]-TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT-INSERT INTO table: "
+						+ "\n[13]-????" + "\n[14]-????" + "\n[15]-Funkar ej !!! manually Insert" + "\n[0]-EXIT "
+						+ "\n|===================================|" + "\n|-----------------------------------|"
+						+ "\n|--------- Michel ----------|" + "\n|---- -------------------- ---------|"
+						+ "\n|===================================|");
 
 				System.out.println("What you wanna do? ");
 
@@ -81,9 +93,9 @@ public class Db {
 					createTable();
 					break;
 				case 3:
-					players();
+					addplayers();
 					break;
-	
+
 				case 4:
 					describeTable();
 					break;
@@ -100,17 +112,16 @@ public class Db {
 				case 8:
 					deleteRecords();
 					break;
-
 				case 9:
 					dropTable();
 					break;
 				case 10:
-					//
+					playerInfo(playerName, connect);
 					break;
 				case 11:
-					
-					///   TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT
-					//	insertIntoTable();
+
+					/// TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT
+					// insertIntoTable();
 				case 12:
 					// ??
 					break;
@@ -167,7 +178,7 @@ public class Db {
 			statement.executeUpdate(sql);
 
 			System.out.println("Database created successfully...");
-			System.out.println("Databasen skapades hos hosting.eu.");
+			System.out.println("Databasen skapades hos: " + dburl);
 		} catch (SQLException se) {
 			// Handle errors for JDBC
 			System.out.println("Database creation failed");
@@ -208,9 +219,9 @@ public class Db {
 			statement = connect.createStatement();
 
 			String sql = "create table IF NOT EXISTS BlackJack " + " (id INT NOT NULL AUTO_INCREMENT,\r\n"
-					+ "Player varchar(50),\r\n" + "saldo int,\r\n" + "   primary key (id))";
-
+					+ "playerName varchar(50),\r\n" + "saldo int,\r\n" + "   primary key (id))";
 			statement.executeUpdate(sql);
+
 			System.out.println("Created table successfully ...");
 		} catch (SQLException se) {
 			// Handle errors for JDBC
@@ -239,54 +250,23 @@ public class Db {
 // INSERT INTO table H�rdkodat   TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT
 	// Conection
 	// TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT
-	
-/*	
-	void insertIntoTable() {
+
+	void insertIntoTable(String playerName, int saldo, Connection connect) {
 		System.out.println("Connecting to a selected database...");
 		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
-			System.out.println("Connected database successfully..." + dburl);
-			// create table
-			System.out.println("Creating table in given database...");
-			statement = connect.createStatement();
-
-			String sql = "insert into BlackJack values (default, 'Player1', 212);";
-			statement.executeUpdate(sql);
-			sql = "insert into BlackJack values (default, 'Astrid Lindgren2',313);";
-			statement.executeUpdate(sql);
-			sql = "insert into BlackJack values (default,'Stephen King',414)";
-			statement.executeUpdate(sql);
-			sql = "insert into BlackJack values (default, 'G.W persson',515)";
-			statement.executeUpdate(sql);
-			sql = "insert into BlackJack values (default,'Johannes',616)";
-			statement.executeUpdate(sql);
-			System.out.println("Inserted records into the table...");
-
-			System.out.println("INSERT INTO BlackJack successfully...");
-		} catch (SQLException se) {
-			// Handle errors for JDBC
-			se.printStackTrace();
-		} catch (Exception e) {
-			// Handle errors for Class.forName
+			PreparedStatement s = connect.prepareStatement("insert into BlackJack values (default,?,?)");
+			s.setString(1, playerName);
+			s.setInt(2, saldo);
+			s.executeUpdate();
+		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			// finally block used to close resources
-			try {
-				if (statement != null)
-					connect.close();
-			} catch (SQLException se) {
-			} // do nothing
-			try {
-				if (connect != null)
-					connect.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			} // end finally try
-		} // end try
-		System.out.println("Goodbye!");
-
+		}
+		
+		System.out.println();
+		System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
+		System.out.println(getName() + " current balance: " + getSaldo());
 	}
-*/
+
 	// DESCRIBE ;
 	// connection
 	void describeTable() {
@@ -333,7 +313,7 @@ public class Db {
 
 	}
 
-	// SELECT * FROM books
+	// SELECT * FROM BlackJack
 	// Now get some metadata from the database
 	// Result set get the result of the SQL query
 	void selectFromtable() {
@@ -346,7 +326,7 @@ public class Db {
 			statement = connect.createStatement();
 
 			// is returned in a 'ResultSet' object.
-			String strSelect = "select id, Player ,Saldo  from BlackJack";
+			String strSelect = "select id, playerName ,Saldo  from BlackJack";
 			System.out.println("The SQL query is: " + strSelect);
 			System.out.println();
 
@@ -357,10 +337,10 @@ public class Db {
 			int rowCount = 0;
 			while (resultSet.next()) { // Move the cursor to the next row, return false if no more row
 				int id = resultSet.getInt("id");
-				String Player = resultSet.getString("Player");
+				String playerName = resultSet.getString("playerName");
 				int Saldo = resultSet.getInt("Saldo");
 
-				System.out.println(id + ", " + Player + ", " + Saldo);
+				System.out.println(id + ", " + playerName + ", " + Saldo);
 				++rowCount;
 			}
 			System.out.println("Total number of records = " + rowCount);
@@ -382,16 +362,16 @@ public class Db {
 			System.out.println("Creating statement...");
 			statement = connect.createStatement();
 
-			String sql = "SELECT  id, Player ,Saldo FROM BlackJack";
+			String sql = "SELECT  id, playerName ,saldo FROM BlackJack";
 			ResultSet rs = statement.executeQuery(sql);
 			// Extract data from result set
 			String strSelect = "select * from BlackJack";
 			System.out.println("The SQL query is: " + strSelect); // Echo For debugging
-			System.out.printf("%2s %8s %5s%n", "id", "Player", "Saldo");
+			System.out.printf("%2s %8s %5s%n", "id", "playerName", "Saldo");
 			ResultSet rset = statement.executeQuery(strSelect);
 			while (rset.next()) { // Move the cursor to the next row
-				System.out
-						.println(rset.getInt("id") + ", " + rset.getString("Player") + ", " + rset.getString("Saldo"));
+				System.out.println(
+						rset.getInt("id") + ", " + rset.getString("playerName") + ", " + rset.getString("Saldo"));
 			}
 			rs.close();
 		} catch (SQLException se) {
@@ -475,7 +455,7 @@ public class Db {
 			System.out.println("The SQL query is: " + strSelect); // Echo for debugging
 			ResultSet resultSet = statement.executeQuery(strSelect);
 			while (resultSet.next()) { // Move the cursor to the next row
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("Player") + ", "
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ", "
 						+ resultSet.getString("Saldo"));
 			}
 		} catch (SQLException ex) {
@@ -495,7 +475,7 @@ public class Db {
 			statement = connect.createStatement();
 
 			// DELETE records with id>=3000 and id<4000
-			String sqlDelete = "delete from BlackJack where id>=2 and id<4";
+			String sqlDelete = "delete from BlackJack where id<0 and id<4";
 			System.out.println("The SQL query is: " + sqlDelete); // Echo for debugging
 			int countDeleted = statement.executeUpdate(sqlDelete);
 			System.out.println(countDeleted + " records deleted.\n");
@@ -504,105 +484,76 @@ public class Db {
 		}
 	}
 
-	// 
-	
+	//
 
+	//
+	//
 	// PLAYER
-	void players(){
-		
-		player p1 = new player();
-		player p2 = new player();
-		player dealer = new player();
-		
-		
-		
-		
-	
-		
-		// dealer  String p1Name=sc.next();
-		System.out.println("Dealer: set your name: ");
-		String dealerName=sc.next();
-		dealer.setName(dealerName);
-		
-		
-	
-		
-		
-		// player saldo
-		p1.saldo =0;
-		p2.saldo=0;
-		// player input
-		System.out.println("Player 1: set your name: ");
-		String p1Name=sc.next();
-		p1.setName(p1Name);
-		System.out.println(p1.getName()+"current balance: " +p1.getSaldo());
-		int p1Saldo=sc.nextInt();
-		p1.setSaldo(p1Saldo);
-		System.out.println(p1.getName()+" updated balance now: "+" " +p1.getSaldo());
-		
-		System.out.println("Player 2: set your name: ");
-		String p2Name=sc.next();
-		p2.setName(p2Name);
-		System.out.println(p2.getName()+" current balance: " +p2.getSaldo());
-		int p2Saldo=sc.nextInt();
-		p2.setSaldo(p2Saldo);
-		System.out.println(p1.getName()+" updated balance is now: "+" " +p2.getSaldo());
-		
-		
-		
-	
+	void addplayers() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		try {
-			System.out.println("Connecting to a selected database...");
-
 			connect = DriverManager.getConnection(dburl, user, pass);
-			// create table
-						System.out.println("Creating table in given database...");
-						
-						 
-			System.out.println("Connected database successfully..." + dburl);
-			String sql = "insert into BlackJack VALUES  (default, ?,?)";
-			PreparedStatement preparedStatement1 = connect.prepareStatement(sql);
-			 
-			
-			
-			preparedStatement1.execute();
-			preparedStatement1.setString(1, p1.getName());
-			preparedStatement1.setLong(2, p1.getSaldo());
-			preparedStatement1.execute();
-			preparedStatement1.setString(1, p2.getName());
-			preparedStatement1.setLong(2, p2.getSaldo());
-			preparedStatement1.execute();
-			
-
-			System.out.println("Record is updated to BlackJack table!");
-			System.out.println("Players are inserted into BlackJack successfully...");
-		} catch (SQLException se) {
-			// Handle errors for JDBC
-			se.printStackTrace();
-		} catch (Exception e) {
-			// Handle errors for Class.forName
+			System.out.println("Players already exists: ");
+			playerInfo("Michel", connect);
+			while (true) {
+				
+				System.out.println("Skriv in ett namn:");
+				String name = sc.next();
+				setPlayerName(name);
+				if (name.equalsIgnoreCase("redo"))
+					break;
+				System.out.println(getName() + " current balance: " + getSaldo());
+				System.out.println(" money insert:");
+				int saldo = sc.nextInt();
+				setSaldo(saldo);
+				System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+				System.out.println();
+				System.out.println(" Type [redo] for start the game!");
+				insertIntoTable(name, saldo, connect);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			// finally block used to close resources
-			try {
-				if (statement != null)
-					connect.close();
-			} catch (SQLException se) {
-			} // do nothing
-			try {
-				if (connect != null)
-					connect.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			} // end finally try
-		} // end try
-		System.out.println("Goodbye!");
+		}
+
+		System.out.println("Record is updated to BlackJack table!");
+		System.out.println("Players are inserted into BlackJack successfully...");
+
+		
 
 	}
-		
-		
-		//////////   NEDAN setters getters and override
+
+	///
+
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
+
+	// Nedanför är en metod för att hämta värden från en tabell
+	private void playerInfo(String playerName, Connection connect) {
+		try {
+			Statement s = connect.createStatement();
+			ResultSet result = s.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
+			if (result.next()) {
+				System.out.println(result.getString("playerName") + " saldo " + result.getString("saldo"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	////////// NEDAN setters getters and override
 
 	public String getDealer() {
 		return dealer;
@@ -613,11 +564,11 @@ public class Db {
 	}
 
 	public String getName() {
-		return name;
+		return playerName;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.playerName = name;
 	}
 
 	public int getSaldo() {
@@ -676,14 +627,6 @@ public class Db {
 		this.books = books;
 	}
 
-	public String getTableName() {
-		return tableName;
-	}
-
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
 	public Scanner getSc() {
 		return sc;
 	}
@@ -734,20 +677,20 @@ public class Db {
 
 	@Override
 	public String toString() {
-		return "Db [name=" + name + ", dealer=" + dealer + ", saldo=" + saldo + ", menu=" + menu + ", connect="
-				+ connect + ", statement=" + statement + ", preparedStatement=" + preparedStatement + ", resultSet="
-				+ resultSet + ", books=" + books + ", tableName=" + tableName + ", sc=" + sc + ", pass=" + pass
-				+ ", user=" + user + ", dburl=" + dburl + ", p2=" + p2 + ", p1=" + p1 + ", getDealer()=" + getDealer()
-				+ ", getName()=" + getName() + ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu()
-				+ ", getConnect()=" + getConnect() + ", getStatement()=" + getStatement() + ", getPreparedStatement()="
-				+ getPreparedStatement() + ", getResultSet()=" + getResultSet() + ", getBooks()=" + getBooks()
-				+ ", getTableName()=" + getTableName() + ", getSc()=" + getSc() + ", getPass()=" + getPass()
+		return "DblocaltestMenu [playerName=" + playerName + ", dealer=" + dealer + ", saldo=" + saldo + ", menu="
+				+ menu + ", connect=" + connect + ", statement=" + statement + ", preparedStatement="
+				+ preparedStatement + ", resultSet=" + resultSet + ", books=" + books + ", sc=" + sc + ", pass=" + pass
+				+ ", user=" + user + ", dburl=" + dburl + ", p2=" + p2 + ", p1=" + p1 + ", getPlayerName()="
+				+ getPlayerName() + ", getDealer()=" + getDealer() + ", getName()=" + getName() + ", getSaldo()="
+				+ getSaldo() + ", getMenu()=" + getMenu() + ", getConnect()=" + getConnect() + ", getStatement()="
+				+ getStatement() + ", getPreparedStatement()=" + getPreparedStatement() + ", getResultSet()="
+				+ getResultSet() + ", getBooks()=" + getBooks() + ", getSc()=" + getSc() + ", getPass()=" + getPass()
 				+ ", getUser()=" + getUser() + ", getDburl()=" + getDburl() + ", getP1()=" + getP1() + ", getP2()="
 				+ getP2() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
 				+ super.toString() + "]";
 	}
 
-
+	// END
 	// END
 
 }

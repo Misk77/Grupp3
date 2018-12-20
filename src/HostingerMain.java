@@ -1,22 +1,22 @@
 
 
-/*
+
 public class HostingerMain {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		HostingerMethods HostingerMethods = new HostingerMethods();
-		HostingerMethods.menu(); // avmarkera denna ifall du ska testa metoden nedan
+		Db Blackjackdb = new Db();
+		Blackjackdb.menu(); // avmarkera denna ifall du ska testa metoden nedan
 	//	HostingerMethods.manuallyInsert();  // testar method direkt h�r
 
-		// Test från Johannes
+		
 		
 		// END
 	}
 
 }
 
-*/
+
 
 
 /////////////////////////////////////////////////   VERISON  0.4 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -29,7 +29,7 @@ public class HostingerMain {
  * 1. Kolla igenom s� inget upprepas, kolla s� ingen VARIABLE deklareras och
  * initieras p� olika st�llen fast har samma metod 
  * 2. Snyggare smartare att ha connection metoden kopplat till VARIABLER 
- * 3. L�gga in querys som kan skrivas
+ * 3. Lägga in querys som kan skrivas
  * i consolen eller dialogruta med swing eller bara console?? 
  * 4. Kolla ifall man kan l�gga in SQL PROCEDURE ??? DET FINNS, KOLLA UPP HUR
  * 5. ??
