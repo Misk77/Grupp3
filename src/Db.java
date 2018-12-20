@@ -47,9 +47,11 @@ public class Db {
 
 	// Ta bort denna och testar local
 	
+	// alltid online
 	  private String pass = "mi235277sk"; 
 	 private String user = "u209758462_misk7";
 	  private String dburl =  "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?"; 
+	  // var ?
 	 private player p2;
 	  private player p1;
 	 
@@ -73,8 +75,8 @@ public class Db {
 						+ "\n[4]-DESCRIBE BLackJack: " + "\n[5]-SELECT * FROM BLackJack: " + "\n[6]-Select Records "
 						+ "\n[7]-Check Update:  " + "\n[8]-Delete Records: " + "\n[9]-Drop Table: "
 						+ "\n[10]-playerInfo: " + "\n[11]- ???"
-						+ "\n[12]-TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT-INSERT INTO table: "
-						+ "\n[13]-????" + "\n[14]-????" + "\n[15]-Funkar ej !!! manually Insert" + "\n[0]-EXIT "
+						+ "\n[12]-????: "
+						+ "\n[13]-????" + "\n[14]-????" + "\n[15]-????" + "\n[0]-EXIT "
 						+ "\n|===================================|" + "\n|-----------------------------------|"
 						+ "\n|--------- Michel ----------|" + "\n|---- -------------------- ---------|"
 						+ "\n|===================================|");
@@ -252,6 +254,20 @@ public class Db {
 	// TA BORT DENNA FÖR ATT KOLLA HUR DET GÅR MED ATT LÄGGA IN SPELARE MANUELLT
 
 	void insertIntoTable(String playerName, int saldo, Connection connect) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			try {
+				connect = DriverManager.getConnection(dburl, user, pass);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		System.out.println("Connecting to a selected database...");
 		try {
 			PreparedStatement s = connect.prepareStatement("insert into BlackJack values (default,?,?)");
@@ -261,12 +277,15 @@ public class Db {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		} finally {
+			// finally block used to close resources
+		}
 		
 		System.out.println();
 		System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
 		System.out.println(getName() + " current balance: " + getSaldo());
 	}
-
+	
 	// DESCRIBE ;
 	// connection
 	void describeTable() {
@@ -500,10 +519,10 @@ public class Db {
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 			System.out.println("Players already exists: ");
-			playerInfo("Michel", connect);
+			playerInfo("johannes", connect);//helst kunna skriva in ett namn
 			while (true) {
-				
-				System.out.println("Skriv in ett namn:");
+				System.out.println("Wanna add player?or reod to play?[redo] ");
+				System.out.println("Player: set your name: ");
 				String name = sc.next();
 				setPlayerName(name);
 				if (name.equalsIgnoreCase("redo"))
@@ -539,11 +558,16 @@ public class Db {
 		this.playerName = playerName;
 	}
 
+	
+	//  Troligen denna som du kan använda för hämta  spelar namn i spelet.
 	// Nedanför är en metod för att hämta värden från en tabell
 	private void playerInfo(String playerName, Connection connect) {
+		
+		
 		try {
 			Statement s = connect.createStatement();
 			ResultSet result = s.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
+			
 			if (result.next()) {
 				System.out.println(result.getString("playerName") + " saldo " + result.getString("saldo"));
 			}
