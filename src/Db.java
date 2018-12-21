@@ -22,6 +22,8 @@ public class Db {
 	private ResultSet resultSet = null; // använda som result VAR
 	// Scanner
 	Scanner sc = new Scanner(System.in);
+	// using blacjjack class object
+	// BlackjackSimulation game= new BlackjackSimulation(); för simulering
 
 	// För att använda vår onlineDB, alltid ONLINE host Hostinger.eu
 
@@ -45,8 +47,8 @@ public class Db {
 						+ "\n[4]-->Describe BLackJack tabell: " + "\n[5]-->Select * FROM BLackJack: "
 						+ "\n[6]-->Select Records: " + "\n[7]-->Update All Saldo To 200:  " + "\n[8]-->Delete Records: "
 						+ "\n[9]-->Drop Table: " + "\n[10]->Player Info: " + "\n[11]->Search Player: "
-						+ "\n[12]->???? : " + "\n[13]->???? : " + "\n[14]->???? : " + "\n[15]->??: " + "\n[0]->EXIT "
-						+ "\n|============================|" + "\n|----------------------------|"
+						+ "\n[12]->???? : " + "\n[13]->???? : " + "\n[14]->???? : " + "\n[15]->??: "
+						+ "\n[0]->Go to GAME " + "\n|============================|" + "\n|----------------------------|"
 						+ "\n|---------- Grupp3 ----------|" + "\n|----------------------------|"
 						+ "\n|============================|");
 
@@ -86,10 +88,10 @@ public class Db {
 					playerInfo(playerName, connect);
 					break;
 				case 11:
-					searchPlayer();
+					// searchPlayer();
 					break;
 				case 12:
-					// ??
+					// Go to GAME
 					break;
 				case 13:
 					// ??
@@ -101,7 +103,7 @@ public class Db {
 					// ??
 					break;
 				case 0:
-					System.out.println("\t\tBye....");
+					System.out.println("Go to GAME");
 					System.exit(0);
 					break;
 				default:
@@ -208,25 +210,6 @@ public class Db {
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
 		}
 
 		System.out.println();
@@ -432,6 +415,28 @@ public class Db {
 		}
 	}
 
+// Update plyerssaldo
+	public void UpdateSaldo(int saldo) {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+			System.out.println("Connected database successfully..." + dburl);
+
+			// update player in blacjjackgame - ("Select * from BlackJack where playerName
+			// ='" + playerName + "'");
+			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
+			// playerName + "'");
+			String strUpdate = "update BlackJack set Saldo  where playerName ='" + playerName + "'";
+			System.out.println("The SQL query is: " + strUpdate); // Echo for debugging
+			int countUpdated = statement.executeUpdate(strUpdate);
+			System.out.println(countUpdated + " records affected.");
+
+		} catch (SQLException e) {
+			// Handle errors for JDBC
+			e.printStackTrace();
+		}
+	}
+
 	/// UPDATE check if update went through
 	void UpdateAllSaldoTo200() {
 		System.out.println("Connecting to a selected database...");
@@ -525,7 +530,12 @@ public class Db {
 			e.printStackTrace();
 		}
 		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
+			try {
+				connect = DriverManager.getConnection(dburl, user, pass);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("Players already exist: ");
 			// playerInfo("Michel", connect);
 			System.out.println();
@@ -545,31 +555,12 @@ public class Db {
 				setSaldo(saldo);
 				System.out.println(getName() + " updated balance now: " + " " + getSaldo());
 				insertIntoTable(name, saldo, connect);
+				System.out.println("Record is updated to BlackJack table!");
+				System.out.println("Players are inserted into BlackJack successfully...");
 
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
-			try {
-				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			System.out.println("Record is updated to BlackJack table!");
-			System.out.println("Players are inserted into BlackJack successfully...");
+
 		}
 	}
 
@@ -626,6 +617,7 @@ public class Db {
 	}
 
 	// searchPlayer Skriv in namnet på spelare och få ut: ID, playerName,Saldo
+
 	void searchPlayer() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -644,6 +636,29 @@ public class Db {
 
 		try {
 			statement = connect.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Enter Player you looking for: ");
+		String playerName = sc.next();
+		try {
+			statement = connect.createStatement();
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		try {
+			System.out.printf("%1s %1s %6s%n", "id", "playerName", "Saldo");
+			resultSet = statement.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			while (resultSet.next()) {
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",   "
+						+ resultSet.getString("Saldo"));
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -665,47 +680,64 @@ public class Db {
 				System.out.println(e);
 				e.printStackTrace();
 			}
-			System.out.println("Enter Player you looking for: ");
-			String playerName = sc.next();
-			try {
-				statement = connect.createStatement();
-			} catch (SQLException e) {
+		}
+	}
 
+	// Get saldo from a player
+	//
+
+	void getsaldoPlayer(String string) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Connected database successfully..." + dburl);
+		System.out.println("Creating statement...");
+
+		try {
+			statement = connect.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			System.out.printf("%1s %n", "Saldo");
+			resultSet = statement.executeQuery("Select saldo from BlackJack where playerName ='" + playerName + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			while (resultSet.next()) {
+				System.out.println(resultSet.getString("Saldo"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				System.out.println(e);
 				e.printStackTrace();
 			}
 			try {
-				System.out.printf("%1s %1s %6s%n", "id", "playerName", "Saldo");
-				resultSet = statement.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
+				statement.close();
 			} catch (SQLException e) {
+				System.out.println(e);
 				e.printStackTrace();
 			}
 			try {
-				while (resultSet.next()) {
-					System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",   "
-							+ resultSet.getString("Saldo"));
-				}
-
+				connect.close();
 			} catch (SQLException e) {
+				System.out.println(e);
 				e.printStackTrace();
-			} finally {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-					System.out.println(e);
-					e.printStackTrace();
-				}
-				try {
-					statement.close();
-				} catch (SQLException e) {
-					System.out.println(e);
-					e.printStackTrace();
-				}
-				try {
-					connect.close();
-				} catch (SQLException e) {
-					System.out.println(e);
-					e.printStackTrace();
-				}
 			}
 		}
 	}
