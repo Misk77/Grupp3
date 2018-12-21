@@ -22,8 +22,6 @@ public class Db {
 	private ResultSet resultSet = null; // använda som result VAR
 	// Scanner
 	Scanner sc = new Scanner(System.in);
-	// using blacjjack class object
-	// BlackjackSimulation game= new BlackjackSimulation(); för simulering
 
 	// För att använda vår onlineDB, alltid ONLINE host Hostinger.eu
 
@@ -415,26 +413,39 @@ public class Db {
 		}
 	}
 
-// Update plyerssaldo
-	public void UpdateSaldo(int saldo) {
+	// Update from simulator OBS!! Hårdkodat att man förlorar 1000, här ska bet in
+	// från game
+// Update  current playerssaldo
+	public boolean UpdateSaldo(int saldo) {
 		System.out.println("Connecting to a selected database...");
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 			System.out.println("Connected database successfully..." + dburl);
+			int bet = 1000;
 
+			saldo = getSaldo() - bet;
 			// update player in blacjjackgame - ("Select * from BlackJack where playerName
 			// ='" + playerName + "'");
 			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
 			// playerName + "'");
-			String strUpdate = "update BlackJack set Saldo  where playerName ='" + playerName + "'";
-			System.out.println("The SQL query is: " + strUpdate); // Echo for debugging
-			int countUpdated = statement.executeUpdate(strUpdate);
-			System.out.println(countUpdated + " records affected.");
+			setSaldo(saldo);
+			System.out.println(getName() + "Saldo  is now: " + " " + getSaldo());
+			System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+			insertIntoTable(getName(), getSaldo(), connect);
 
 		} catch (SQLException e) {
 			// Handle errors for JDBC
 			e.printStackTrace();
+		} finally {
+
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
 		}
+		return true;
 	}
 
 	/// UPDATE check if update went through
@@ -494,7 +505,7 @@ public class Db {
 			statement = connect.createStatement();
 
 			// DELETE records with id>=0 and id<10
-			String sqlDelete = "delete from BlackJack where id>0 and id<10";
+			String sqlDelete = "delete from BlackJack where id>0 and id<100";
 			System.out.println("The SQL query is: " + sqlDelete);
 			int countDeleted = statement.executeUpdate(sqlDelete);
 			System.out.println(countDeleted + " records deleted.\n");
@@ -880,16 +891,15 @@ public class Db {
 
 	@Override
 	public String toString() {
-		return "DblocaltestMenu [playerName=" + playerName + ", dealer=" + dealer + ", saldo=" + saldo + ", menu="
-				+ menu + ", connect=" + connect + ", statement=" + statement + ", preparedStatement="
-				+ preparedStatement + ", resultSet=" + resultSet + ", sc=" + sc + ", pass=" + pass + ", user=" + user
-				+ ", dburl=" + dburl + ", getPlayerName()=" + getPlayerName() + ", getDealer()=" + getDealer()
-				+ ", getName()=" + getName() + ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu()
-				+ ", getConnect()=" + getConnect() + ", getStatement()=" + getStatement() + ", getPreparedStatement()="
-				+ getPreparedStatement() + ", getResultSet()=" + getResultSet() + ", getSc()=" + getSc()
-				+ ", getPass()=" + getPass() + ", getUser()=" + getUser() + ", getDburl()=" + getDburl()
-				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
-				+ "]";
+		return "Db [playerName=" + playerName + ", dealer=" + dealer + ", saldo=" + saldo + ", menu=" + menu
+				+ ", connect=" + connect + ", statement=" + statement + ", preparedStatement=" + preparedStatement
+				+ ", resultSet=" + resultSet + ", sc=" + sc + ", pass=" + pass + ", user=" + user + ", dburl=" + dburl
+				+ ", getPlayerName()=" + getPlayerName() + ", getDealer()=" + getDealer() + ", getName()=" + getName()
+				+ ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu() + ", getConnect()=" + getConnect()
+				+ ", getStatement()=" + getStatement() + ", getPreparedStatement()=" + getPreparedStatement()
+				+ ", getResultSet()=" + getResultSet() + ", getSc()=" + getSc() + ", getPass()=" + getPass()
+				+ ", getUser()=" + getUser() + ", getDburl()=" + getDburl() + ", getClass()=" + getClass()
+				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
 	}
 
 	// END
