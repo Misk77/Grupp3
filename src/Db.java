@@ -415,7 +415,7 @@ public class Db {
 
 	// Update from simulator OBS!! Hårdkodat att man förlorar 1000, här ska bet in
 	// från game
-// Update  current playerssaldo
+	// Update  current playerssaldo
 	public boolean UpdateSaldo(int saldo) {
 		System.out.println("Connecting to a selected database...");
 		try {
@@ -790,6 +790,142 @@ public class Db {
 			}
 		}
 	}
+
+
+
+
+
+	////////////////////////////////////////////////////////////////////////IN-GAME METODER /////////////////////////////////////////////////////////////////////////////////////////
+
+	void inGameOpenConn()
+	{
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			statement = connect.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void inGameCloseConn()
+	{
+		try {
+			resultSet.close();
+		} catch (SQLException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		try {
+			statement.close();
+		} catch (SQLException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		try {
+			connect.close();
+		} catch (SQLException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+	}
+
+
+	// Connection must first be opened with inGameOpenConn(). Then close it when all is done, with inGameCloseConn().
+	int inGameGetSaldo(String pname) {
+		playerName = pname;
+		String plSaldoStr = "";
+		int plSaldoInt = 0;
+
+
+		try {
+			resultSet = statement.executeQuery("Select saldo from BlackJack where playerName ='" + playerName + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			while (resultSet.next()) {
+				plSaldoStr = resultSet.getString("Saldo");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		plSaldoInt = Integer.parseInt(plSaldoStr);
+		return plSaldoInt;
+	}
+
+
+	// Connection must first be opened with inGameOpenConn(). Then close it when all is done, with inGameCloseConn().
+	boolean playerNameExists(String pname) {
+		playerName = pname;
+		boolean playerExists = false;
+		String theResult = "";
+
+		try {
+			resultSet = statement.executeQuery("Select playerName from BlackJack where playerName ='" + playerName + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			while (resultSet.next()) {
+				theResult = resultSet.getString("playerName");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+
+		if (theResult.length() > 0)
+		{
+			playerExists = true;
+		}
+		return playerExists;
+	}
+
+	// Connection must first be opened with inGameOpenConn(). Then close it when all is done, with inGameCloseConn().
+	void inGameAddPlayer(String pname, int credits) {
+
+		try {
+			preparedStatement = connect.prepareStatement("insert into BlackJack values (default,?,?)");
+
+			preparedStatement.setString(1, pname);
+			preparedStatement.setInt(2, credits);
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	// Connection must first be opened with inGameOpenConn(). Then close it when all is done, with inGameCloseConn().
+	void inGameIncrBalance(String pname, int amount) {
+		// Add credits to account
+	}
+
+	// Connection must first be opened with inGameOpenConn(). Then close it when all is done, with inGameCloseConn().
+	void inGameDecrBalance(String pname, int amount) {
+		// Take credits from account
+	}
+
+
+
+
+
+
+
+
 	////////// NEDAN setters getters and override
 
 	public String getDealer() {
