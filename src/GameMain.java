@@ -41,9 +41,15 @@ public class GameMain {
 		 *    
 		 * 2. Ge först ett kort var till varje spelare och dealern, och sen det andra till spelarna och ett facedown till dealern.
 		 * 
-		 * 3. Kolla en spelares kort i taget. Har någon fått 21, Skriv "Blackjack!" ta bort korten och ge pengar direkt (1.5*bet).
+		 * 3. Kolla en spelares kort i taget. Har någon fått 21, Skriv "Blackjack!" Ge pengar direkt (2.5*bet tillbaka). Över 21 = "Busted!"
 		 *    
 		 * 4. En spelare i taget: visa summan (t.ex. "13" eller "9 or 19" vid ess) och fråga "Hit or Stay?"
+		 * 
+		 * 5. När alla spelare är klara visas dealerns andra kort, och blir det under 17 tar dealern nytt kort tills det blir 17 eller mer.
+		 * 
+		 * 6. Jämför dealerns hand mot spelarnas. Dela ut ev. vinster.
+		 * 
+		 * 7. Fråga om det ska bli en till omgång.
 		 */
 
 		player[0] = new PlayersTest("Dealer", 0); 
@@ -194,14 +200,12 @@ public class GameMain {
 
 		for (int i=1;i<numberOfPlayers;i++)
 		{
-		countPlayerHand2(player, i);
+		countPlayerHand(player, i);
 		}
 	}
 
 
-	static void countPlayerHand2(PlayersTest[] player, int playerNumber) // BORDE GÖRA OM DENNA SÅ ATT DEN RÄKNAR FÖR EN GIVEN PERSON, HUR GÖR JAG ANNARS NÄR MAN TAR ETT TILL KORT?
-	// Bara att sätta loopen i metoden innan tänker jag... fundera!
-	// Denna skulle kunna returnera en int/sträng/array med resultat av räkningen bara...
+	static void countPlayerHand(PlayersTest[] player, int playerNumber)
 	{
 		int i = playerNumber;
 		int currentCard = 0;
@@ -257,18 +261,11 @@ public class GameMain {
 			hitOrStay = s.next();
 			if (hitOrStay.equalsIgnoreCase("H"))
 			{
-				// Get a card, set drawncards+1, drawTable, counthand
 				player[i].cards[player[i].getDrawnCards()] = Card.getCard();
 				player[i].setDrawnCards(player[i].getDrawnCards()+1);
 				drawBoard(player, numberOfPlayers+1, false);
-				countPlayerHand2(player, i);
-				
-				
+				countPlayerHand(player, i);
 			}
-//			else
-//			{
-//				continue; // ??? inte testat
-//			}
 		}
 
 	}
@@ -281,7 +278,6 @@ public class GameMain {
 		String boxTop = "╔═════════════════════════╗ ";
 		String boxBtm = "╚═════════════════════════╝ ";
 		String[] faceDown = {" ", " "};
-		//boolean revealDealersSecond = false;
 
 		// Rita upp dealerns del av bordet:
 		System.out.println();
