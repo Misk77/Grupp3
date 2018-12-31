@@ -1,3 +1,5 @@
+
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -17,7 +19,7 @@ public class Db {
 	// menu
 	private int menu;
 	// jdbc
-	private String sql;
+	String sql;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null; // lägga in preparedStatement
@@ -34,21 +36,23 @@ public class Db {
 	// För att testa lokalt host: dusjälv.se
 	/*
 	 * private String dburl = "jdbc:mysql://localhost/feedback?"; private String
-	 * user = "root"; private String pass = "root";
+	 * user = "root"; private String pass = "root"; connectMethod()
 	 */
 	// METHOD MENU
 	public void menu() {
 		while (true) {
 			try {
 
-				System.out.println("|============================|" + "\n|------TEST MICHEL  Database Menu -------|"
+				System.out.println("|============================|" + "\n|------ TEST MICHELK Database Menu -------|"
 						+ "\n|---- BLackJack DATABASE ----|" + "\n|============================|"
 						+ "\n[1]-->Create Database: " + "\n[2]-->Create TABLE:  " + "\n[3]-->Create players: "
 						+ "\n[4]-->Describe BLackJack tabell: " + "\n[5]-->Select * FROM BLackJack: "
 						+ "\n[6]-->Select Records: " + "\n[7]-->Update All Saldo To 200:  " + "\n[8]-->Delete Records: "
 						+ "\n[9]-->Drop Table: " + "\n[10]->Player Info: " + "\n[11]->Search Player: "
-						+ "\n[12]->insertTestPlayers : " + "\n[13]->Highscore : " + "\n[14]->???? : " + "\n[15]->??: "
-						+ "\n[0]->Go to GAME " + "\n|============================|" + "\n|----------------------------|"
+						+ "\n[12]->insertTestPlayers : " + "\n[13]-> highscore(); : "
+						+ "\n[14]->playerUpdateTheSaldo : " + "\n[15]->UpdateSaldoInGame: "
+						+ "\n[16]->Connection method: " + "\n[17]->???: " + "\n[18]->????: " + "\n[0]->Go to GAME "
+						+ "\n|============================|" + "\n|----------------------------|"
 						+ "\n|---------- Grupp3 ----------|" + "\n|----------------------------|"
 						+ "\n|============================|");
 
@@ -97,9 +101,18 @@ public class Db {
 					highscore();
 					break;
 				case 14:
-					// ??
+					playerUpdateTheSaldo(saldo);
 					break;
 				case 15:
+					UpdateSaldoInGame(saldo);
+					break;
+				case 16:
+					connectMethod();
+					break;
+				case 17:
+					// ??
+					break;
+				case 18:
 					// ??
 					break;
 				case 0:
@@ -118,8 +131,23 @@ public class Db {
 		}
 
 	}
+////////////////////////////// DATABASE STUFF INDELAT I METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	////// DATABASE STUFF INDELAT I METHODS
+	// Connection method 29 dec
+	Connection connectMethod() {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+
+			System.out.println("Connected database successfully..." + dburl);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return connect;
+	}
+
+	//
+	////// CREATE DATABASE
 	void createDatabase() {
 		try {
 			// This will load the MySQL driver, each DB has its own driver
@@ -169,7 +197,7 @@ public class Db {
 			System.out.println("Creating table in given database...");
 			statement = connect.createStatement();
 
-			String sql = "create table IF NOT EXISTS BlackJack " + " (id INT NOT NULL AUTO_INCREMENT,\r\n"
+			sql = "create table IF NOT EXISTS BlackJack " + " (id INT NOT NULL AUTO_INCREMENT,\r\n"
 					+ "playerName varchar(50),\r\n" + "highscore int ,\r\n" + "saldo int,\r\n" + "   primary key (id))";
 			statement.executeUpdate(sql);
 
@@ -217,10 +245,38 @@ public class Db {
 		System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
 		System.out.println(getName() + " current balance: " + getSaldo());
 	}
+	/*
+	// update saldo from input from player
+		void insertUpdatedSaldo(int saldo) {
+			System.out.println("Connecting to a selected database...");
+			try { // where playerName ='" + playerName + "'" 
+				 statement = connect.createStatement();
+		            String query = "update BlackJack set Saldo =";
+		            //count will give you how many records got updated
+		           statement.executeUpdate(query);
+		            System.out.println("Updated queries: ");
+				 
+				//String strUpdate=("update BlackJack set Saldo where playerName =?'" + playerName );
+				System.out.println("The SQL query is: " + statement); // Echo for debugging
+				//statement.executeQuery(statement);
+				
 
+				
+			
+			}catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println();
+			System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
+			System.out.println(getName() + " current balance: " + getSaldo());
+		
+		}
+*/
 	// Insert auto player for test
-	// Insert
+	// Insert player for testing or could be use for random opponents??
 	void insertTestPlayers(String playerName, int highscore, int saldo, Connection connect) {
+		connectMethod();
 		System.out.println("Connecting to a selected database...");
 		try {
 			preparedStatement = connect.prepareStatement("insert into BlackJack values (default,?,?,?)");
@@ -235,60 +291,13 @@ public class Db {
 			statement.executeUpdate(sql);
 
 			System.out.println("Inserted TESTPLAYERS into the table...");
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-	}
+		System.out.println();
+		System.out.println("Hello TestPlayers/Random Players " + "! Let's play!\n");
 
-	// Get the highscore
-
-	void highscore() {
-		System.out.println("Connecting to a selected database...");
-		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
-
-			System.out.println("Connected database successfully..." + dburl);
-
-			System.out.println("Creating statement...");
-			statement = connect.createStatement();
-
-			 sql = "SELECT id, playerName ,highscore,saldo FROM BlackJack   ORDER BY highscore DESC ";
-			
-		        
-			 resultSet = statement.executeQuery(sql);
-			System.out.printf("%1s %10s %15s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
-			
-			while (resultSet.next()) { // Move the cursor to the next row
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
-						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
-			}
-			resultSet.close();
-		} catch (SQLException e) {
-			// Handle errors for JDBC
-			System.out.println(e);
-			e.printStackTrace();
-		} finally {
-			try {
-				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-		}
 	}
 
 	// DESCRIBE
@@ -357,7 +366,7 @@ public class Db {
 			statement = connect.createStatement();
 
 			// is returned in a 'ResultSet' object.
-			String strSelect = "select id, playerName,highscore,Saldo from BlackJack";
+			String strSelect = "select id, playerName,highscore,Saldo  from BlackJack";
 			System.out.println("The SQL query is: " + strSelect);
 			System.out.println();
 
@@ -369,13 +378,10 @@ public class Db {
 			int rowCount = 0;
 			while (resultSet.next()) { // Move the cursor to the next row, return false if no more row
 				System.out.println();
-				int id = resultSet.getInt("id");
-				String playerName = resultSet.getString("playerName");
-				int highscore = resultSet.getInt("highscore");
-				int Saldo = resultSet.getInt("Saldo");
-				System.out.printf("%1s %10s %12s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
+				System.out.printf("%1s %10s %15s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
 
-				System.out.println(id + ", " + playerName + ",     " + highscore + ",        " + Saldo);
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
 				++rowCount;
 			}
 			System.out.println();
@@ -422,12 +428,12 @@ public class Db {
 			resultSet = statement.executeQuery(sql);
 			// Extract data from result set
 			String strSelect = "select * from BlackJack";
-			System.out.println("The SQL query is:Select records " + strSelect); // Echo For debugging
-			System.out.printf("%1s %10s %12s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
+			System.out.println("The SQL query is: " + strSelect); // Echo For debugging
+			System.out.printf("%1s %10s %15s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
 			resultSet = statement.executeQuery(strSelect);
 			while (resultSet.next()) { // Move the cursor to the next row
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",     "
-						+ resultSet.getString("highscore") + ",        " + resultSet.getString("Saldo"));
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
 			}
 			resultSet.close();
 		} catch (SQLException e) {
@@ -492,8 +498,9 @@ public class Db {
 
 	// Update from simulator OBS!! Hårdkodat att man förlorar 1000, här ska bet in
 	// från game
-// Update  current playerssaldo
-	public boolean UpdateSaldo(int saldo) {
+// Update  current UpdateSaldoInGame
+	// This happen during the players play the game
+	public boolean UpdateSaldoInGame(int saldo) {
 		System.out.println("Connecting to a selected database...");
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
@@ -525,7 +532,47 @@ public class Db {
 		return true;
 	}
 
+	// Player update the saldo 29 dec
+	// If plyaer wanna insert more money
+	public boolean playerUpdateTheSaldo(int saldo) {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+			System.out.println("Connected database successfully..." + dburl);
+			// update player in blacjjackgame - ("Select * from BlackJack where playerName
+			// ='" + playerName + "'");
+			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
+			// playerName + "'");
+			System.out.printf(playerName+ ": current balance: ", getSaldo());
+			System.out.println(" insert money:");
+			saldo = sc.nextInt();
+			setSaldo(saldo);
+			System.out.println(playerName+ " updated balance is now: " + " " + getSaldo());
+			
+			setSaldo(saldo);
+			System.out.println(playerName+"Saldo  is now: " + " " + getSaldo());
+			System.out.println(playerName+" updated balance now: " + " " + getSaldo());
+			insertIntoTable(playerName,getSaldo(), getHighscore(), connect);
+
+			
+
+		} catch (SQLException e) {
+			// Handle errors for JDBC
+			e.printStackTrace();
+		} finally {
+
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
 	/// UPDATE check if update went through
+	// all player under 200 get 200 to play with
 	void UpdateAllSaldoTo200() {
 		System.out.println("Connecting to a selected database...");
 		try {
@@ -545,8 +592,8 @@ public class Db {
 			System.out.println("The SQL query is: " + strSelect); // Echo for debugging
 			ResultSet resultSet = statement.executeQuery(strSelect);
 			while (resultSet.next()) { // Move the cursor to the next row
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ", "
-						+ resultSet.getString("highscore") + resultSet.getString("Saldo"));
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -661,7 +708,8 @@ public class Db {
 		this.playerName = playerName;
 	}
 
-	// DEnna visar först i add player metoden vilka spelare som finns i DB
+	// DEnna visar först i add player metoden vilka spelare som finns i DB(detta
+	// verkar ej fungera i nuläget, tanken visa alla spelare i databasen
 	// Nedanför är en metod för att hämta värden från en tabell
 	private void playerInfo(String playerName, Connection connect) {
 		try {
@@ -677,8 +725,8 @@ public class Db {
 			statement = connect.createStatement();
 			resultSet = statement.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
 			if (resultSet.next()) {
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ", "
-						+ resultSet.getString("highscore") + resultSet.getString("Saldo"));
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -704,7 +752,8 @@ public class Db {
 		}
 	}
 
-	// searchPlayer Skriv in namnet på spelare och få ut: ID, playerName,Saldo
+	// searchPlayer Skriv in namnet på spelare och få ut: ID,
+	// playerName,highscore,Saldo
 
 	void searchPlayer() {
 		try {
@@ -736,15 +785,15 @@ public class Db {
 			e.printStackTrace();
 		}
 		try {
-			System.out.printf("%2s %8s %5s %5s%n", "id", "playerName", "highscore", "Saldo");
+			System.out.printf("%1s %10s %15s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
 			resultSet = statement.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		try {
 			while (resultSet.next()) {
-				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",   "
-						+ resultSet.getString("highscore") + resultSet.getString("Saldo"));
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
 			}
 
 		} catch (SQLException e) {
@@ -771,7 +820,7 @@ public class Db {
 		}
 	}
 
-	// Get saldo from a player
+	// Get saldo from a player , search specific player
 	void getsaldoPlayer(String string) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -828,7 +877,57 @@ public class Db {
 		}
 	}
 
-	///// ENkel connection och query, kan ändras eftersom
+	// Get the highscore ,NOW get all players highscore, maybe do one for search
+	// specific??
+
+	void highscore() {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+
+			System.out.println("Connected database successfully..." + dburl);
+
+			System.out.println("Creating statement...");
+			statement = connect.createStatement();
+
+			// String sql = "SELECT id,playerName ,highscore,saldo FROM BlackJack";
+			String sql = ("SELECT id, playerName, highscore ,Saldo FROM BlackJack \r\n" + "ORDER BY highscore DESC");
+			System.out.println("The SQL query is: " + sql); // Echo For debugging
+			System.out.printf("%1s %10s %15s %10s%n", "ID", "PLAYER", "HIGHSCORE", "SALDO");
+			resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) { // Move the cursor to the next row
+				System.out.println(resultSet.getInt("id") + ", " + resultSet.getString("playerName") + ",         "
+						+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			// Handle errors for JDBC
+			System.out.println(e);
+			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
+	}
+
+	///// ENkel connection och query, kan ändras eftersom, bra att ha och ta ifrån
+	///// den kod man behöver
 	public void selectFromSomeTable() {
 
 		try {
@@ -967,19 +1066,28 @@ public class Db {
 	@Override
 	public String toString() {
 		return "Db [playerName=" + playerName + ", dealer=" + dealer + ", saldo=" + saldo + ", highscore=" + highscore
-				+ ", menu=" + menu + ", connect=" + connect + ", statement=" + statement + ", preparedStatement="
-				+ preparedStatement + ", resultSet=" + resultSet + ", sc=" + sc + ", pass=" + pass + ", user=" + user
-				+ ", dburl=" + dburl + ", getPlayerName()=" + getPlayerName() + ", getDealer()=" + getDealer()
-				+ ", getName()=" + getName() + ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu()
-				+ ", getConnect()=" + getConnect() + ", getStatement()=" + getStatement() + ", getPreparedStatement()="
-				+ getPreparedStatement() + ", getResultSet()=" + getResultSet() + ", getSc()=" + getSc()
-				+ ", getPass()=" + getPass() + ", getUser()=" + getUser() + ", getDburl()=" + getDburl()
-				+ ", getHighscore()=" + getHighscore() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
-				+ ", toString()=" + super.toString() + "]";
+				+ ", menu=" + menu + ", sql=" + sql + ", connect=" + connect + ", statement=" + statement
+				+ ", preparedStatement=" + preparedStatement + ", resultSet=" + resultSet + ", sc=" + sc + ", pass="
+				+ pass + ", user=" + user + ", dburl=" + dburl + ", connectMethod()=" + connectMethod()
+				+ ", getPlayerName()=" + getPlayerName() + ", getDealer()=" + getDealer() + ", getName()=" + getName()
+				+ ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu() + ", getConnect()=" + getConnect()
+				+ ", getStatement()=" + getStatement() + ", getPreparedStatement()=" + getPreparedStatement()
+				+ ", getResultSet()=" + getResultSet() + ", getSc()=" + getSc() + ", getPass()=" + getPass()
+				+ ", getUser()=" + getUser() + ", getDburl()=" + getDburl() + ", getHighscore()=" + getHighscore()
+				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
+				+ "]";
 	}
 
 	public int getHighscore() {
 		return highscore;
+	}
+
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
 	}
 
 	public void setHighscore(int highscore) {
