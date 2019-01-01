@@ -1,5 +1,4 @@
 
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -28,33 +27,34 @@ public class Db {
 	Scanner sc = new Scanner(System.in);
 
 	// För att använda vår onlineDB, alltid ONLINE host Hostinger.eu
-
-	private String pass = "mi235277sk";
-	private String user = "u209758462_misk7";
-	private String dburl = "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
-
-	// För att testa lokalt host: dusjälv.se
 	/*
-	 * private String dburl = "jdbc:mysql://localhost/feedback?"; private String
-	 * user = "root"; private String pass = "root"; connectMethod()
+	 * private String pass = "mi235277sk"; private String user = "u209758462_misk7";
+	 * private String dburl =
+	 * "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
 	 */
+	// För att testa lokalt host: dusjälv.se
+
+	private String dburl = "jdbc:mysql://localhost/feedback?";
+	private String user = "root";
+	private String pass = "root";
+
 	// METHOD MENU
 	public void menu() {
 		while (true) {
 			try {
 
-				System.out.println("|============================|" + "\n|------ TEST MICHELK Database Menu -------|"
+				System.out.println("|============================|" + "\n|------  Database Menu -------|"
 						+ "\n|---- BLackJack DATABASE ----|" + "\n|============================|"
 						+ "\n[1]-->Create Database: " + "\n[2]-->Create TABLE:  " + "\n[3]-->Create players: "
 						+ "\n[4]-->Describe BLackJack tabell: " + "\n[5]-->Select * FROM BLackJack: "
 						+ "\n[6]-->Select Records: " + "\n[7]-->Update All Saldo To 200:  " + "\n[8]-->Delete Records: "
 						+ "\n[9]-->Drop Table: " + "\n[10]->Player Info: " + "\n[11]->Search Player: "
-						+ "\n[12]->insertTestPlayers : " + "\n[13]-> highscore(); : "
-						+ "\n[14]->playerUpdateTheSaldo : " + "\n[15]->UpdateSaldoInGame: "
-						+ "\n[16]->Connection method: " + "\n[17]->???: " + "\n[18]->????: " + "\n[0]->Go to GAME "
-						+ "\n|============================|" + "\n|----------------------------|"
-						+ "\n|---------- Grupp3 ----------|" + "\n|----------------------------|"
-						+ "\n|============================|");
+						+ "\n[12]->InsertTestPlayers : " + "\n[13]-> Highscore Lista : "
+						+ "\n[14]->PlayerUpdateTheSaldo : " + "\n[15]->inGameDecrBalance: "
+						+ "\n[16]->inGameIncrBalance: " + "\n[17]->connectMethod: " + "\n[18]->inGameOpenConn: " + "\n[19]->inGameCloseConn: "
+						+ "\n[20]->????: " + "\n[0]->Go/Return to the GAME MENU " + "\n|============================|"
+						+ "\n|----------------------------|" + "\n|---------- Grupp3 ----------|"
+						+ "\n|----------------------------|" + "\n|============================|");
 
 				System.out.println("What you wanna do? ");
 
@@ -104,19 +104,28 @@ public class Db {
 					playerUpdateTheSaldo(saldo);
 					break;
 				case 15:
-					UpdateSaldoInGame(saldo);
+					inGameDecrBalance(playerName, saldo);
 					break;
 				case 16:
-					connectMethod();
+					inGameIncrBalance(playerName, saldo);
 					break;
 				case 17:
-					// ??
+					connectMethod();
 					break;
 				case 18:
-					// ??
+					inGameOpenConn();
+					break;
+				case 19:
+					inGameCloseConn();
+					break;
+				case 20:
+					// ???
+					break;
+				case 21:
+					// ???
 					break;
 				case 0:
-					System.out.println("Go to GAME");
+					System.out.println("Return to the GAME MENU");
 					System.exit(0);
 					break;
 				default:
@@ -133,7 +142,10 @@ public class Db {
 	}
 ////////////////////////////// DATABASE STUFF INDELAT I METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	// Connection method 29 dec
+	////// Different Connection/close Methods \\\\\\\\\\\\\\
+
+	// Connection method 29 dec // Stänger inte connection, alltid öppen tills man
+	// använder inGameCloseConn
 	Connection connectMethod() {
 		System.out.println("Connecting to a selected database...");
 		try {
@@ -144,6 +156,47 @@ public class Db {
 			e.printStackTrace();
 		}
 		return connect;
+	}
+
+	// Connect to BlackJackDb
+	public Connection inGameOpenConn() {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+
+			System.out.println("Connected database successfully..." + dburl);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return connect;
+	}
+
+	// Close db connection
+	public void inGameCloseConn() {
+		try {
+			System.out.println("Closing  BlackJackDb... ");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
 	}
 
 	//
@@ -245,34 +298,30 @@ public class Db {
 		System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
 		System.out.println(getName() + " current balance: " + getSaldo());
 	}
+
 	/*
-	// update saldo from input from player
-		void insertUpdatedSaldo(int saldo) {
-			System.out.println("Connecting to a selected database...");
-			try { // where playerName ='" + playerName + "'" 
-				 statement = connect.createStatement();
-		            String query = "update BlackJack set Saldo =";
-		            //count will give you how many records got updated
-		           statement.executeUpdate(query);
-		            System.out.println("Updated queries: ");
-				 
-				//String strUpdate=("update BlackJack set Saldo where playerName =?'" + playerName );
-				System.out.println("The SQL query is: " + statement); // Echo for debugging
-				//statement.executeQuery(statement);
-				
-
-				
-			
-			}catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-			System.out.println();
-			System.out.println("Hello " + getPlayerName() + "! Let's play!\n");
-			System.out.println(getName() + " current balance: " + getSaldo());
-		
-		}
-*/
+	 * // update saldo from input from player void insertUpdatedSaldo(int saldo) {
+	 * System.out.println("Connecting to a selected database..."); try { // where
+	 * playerName ='" + playerName + "'" statement = connect.createStatement();
+	 * String query = "update BlackJack set Saldo ="; //count will give you how many
+	 * records got updated statement.executeUpdate(query);
+	 * System.out.println("Updated queries: ");
+	 * 
+	 * //String strUpdate=("update BlackJack set Saldo where playerName =?'" +
+	 * playerName ); System.out.println("The SQL query is: " + statement); // Echo
+	 * for debugging //statement.executeQuery(statement);
+	 * 
+	 * 
+	 * 
+	 * 
+	 * }catch (SQLException e) { e.printStackTrace(); }
+	 * 
+	 * System.out.println(); System.out.println("Hello " + getPlayerName() +
+	 * "! Let's play!\n"); System.out.println(getName() + " current balance: " +
+	 * getSaldo());
+	 * 
+	 * }
+	 */
 	// Insert auto player for test
 	// Insert player for testing or could be use for random opponents??
 	void insertTestPlayers(String playerName, int highscore, int saldo, Connection connect) {
@@ -497,16 +546,19 @@ public class Db {
 	}
 
 	// Update from simulator OBS!! Hårdkodat att man förlorar 1000, här ska bet in
-	// från game
-// Update  current UpdateSaldoInGame
+	// från game , 2 methods First(inGameDecrBalance) LOOSE then
+	// WIN(inGameIncrBalance)
+
+// Update  current UpdateSaldoLooseInGame
 	// This happen during the players play the game
-	public boolean UpdateSaldoInGame(int saldo) {
+	public boolean UpdateSaldoLooseInGame(int saldo) {
 		System.out.println("Connecting to a selected database...");
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 			System.out.println("Connected database successfully..." + dburl);
-			int bet = 1000;
+			int bet = 1000; // Players bet in here
 
+			// LOOSE
 			saldo = getSaldo() - bet;
 			// update player in blacjjackgame - ("Select * from BlackJack where playerName
 			// ='" + playerName + "'");
@@ -543,18 +595,16 @@ public class Db {
 			// ='" + playerName + "'");
 			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
 			// playerName + "'");
-			System.out.printf(playerName+ ": current balance: ", getSaldo());
+			System.out.printf(playerName + ": current balance: ", getSaldo());
 			System.out.println(" insert money:");
 			saldo = sc.nextInt();
 			setSaldo(saldo);
-			System.out.println(playerName+ " updated balance is now: " + " " + getSaldo());
-			
-			setSaldo(saldo);
-			System.out.println(playerName+"Saldo  is now: " + " " + getSaldo());
-			System.out.println(playerName+" updated balance now: " + " " + getSaldo());
-			insertIntoTable(playerName,getSaldo(), getHighscore(), connect);
+			System.out.println(playerName + " updated balance is now: " + " " + getSaldo());
 
-			
+			setSaldo(saldo);
+			System.out.println(playerName + "Saldo  is now: " + " " + getSaldo());
+			System.out.println(playerName + " updated balance now: " + " " + getSaldo());
+			insertIntoTable(playerName, getSaldo(), getHighscore(), connect);
 
 		} catch (SQLException e) {
 			// Handle errors for JDBC
@@ -700,15 +750,8 @@ public class Db {
 	}
 
 	///
-	public String getPlayerName() {
-		return playerName;
-	}
 
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
-	}
-
-	// DEnna visar först i add player metoden vilka spelare som finns i DB(detta
+	// Denna visar först i add player metoden vilka spelare som finns i DB(detta
 	// verkar ej fungera i nuläget, tanken visa alla spelare i databasen
 	// Nedanför är en metod för att hämta värden från en tabell
 	private void playerInfo(String playerName, Connection connect) {
@@ -926,6 +969,120 @@ public class Db {
 		}
 	}
 
+	// Kolla ifall spelaren redan finns
+	public boolean playerNameExists(String pname) {
+		// Kolla playerName in db
+		return false;
+	}
+
+	// Koll saldo hos spelaren
+	public int inGameGetSaldo(String pname) {
+		getSaldo();
+		return saldo;
+	}
+
+	// lägga till spelare
+	public void inGameAddPlayer(String pname, int newPlayerBalance) {
+		// addPlayer();
+
+		/*
+		 * try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch
+		 * (ClassNotFoundException e) { e.printStackTrace(); } try { try { connect =
+		 * DriverManager.getConnection(dburl, user, pass); } catch (SQLException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 * System.out.println("Players already exist: "); // playerInfo("Michel",
+		 * connect); System.out.println(); while (true) {
+		 * 
+		 * System.out.
+		 * println("*********************************\n*Type [ready] for start playing!*"
+		 * ); System.out.println("*********************************");
+		 * System.out.println("Enter player name:"); String name = sc.next(); if
+		 * (name.equalsIgnoreCase("ready")) break; setPlayerName(name);
+		 * 
+		 * System.out.printf("" + getName(), ": current balance: ", setSaldo(0));
+		 * System.out.println(" money insert:"); saldo = sc.nextInt(); setSaldo(saldo);
+		 * System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+		 * insertIntoTable(name, highscore, saldo, connect);
+		 * System.out.println("Record is updated to BlackJack table!");
+		 * System.out.println("Players are inserted into BlackJack successfully...");
+		 * 
+		 * } } finally {
+		 * 
+		 * } }
+		 * 
+		 * 
+		 */
+
+	}
+
+	// Player LOOSE, DECREMENT MONEY/SALDO
+	public void inGameDecrBalance(String playerName2, int currentBet) {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+			System.out.println("Connected database successfully..." + dburl);
+			int bet = 1000; // Players bet in here
+
+			// LOOSE
+			saldo = getSaldo() - bet;
+			// update player in blacjjackgame - ("Select * from BlackJack where playerName
+			// ='" + playerName + "'");
+			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
+			// playerName + "'");
+			setSaldo(saldo);
+			System.out.println(getName() + "Saldo  is now: " + " " + getSaldo());
+			System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+			insertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+
+		} catch (SQLException e) {
+			// Handle errors for JDBC
+			e.printStackTrace();
+		} finally {
+
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
+	/// Increment WIN IN GAME INCREMENT MONEY/SALDO
+	public void inGameIncrBalance(String playerName2, int currentBet) {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+			System.out.println("Connected database successfully..." + dburl);
+			int bet = 1000; // Players bet in here
+
+			// WIN
+			saldo = getSaldo() + bet;
+			// update player in blacjjackgame - ("Select * from BlackJack where playerName
+			// ='" + playerName + "'");
+			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
+			// playerName + "'");
+			setSaldo(saldo);
+			System.out.println(getName() + "Saldo  is now: " + " " + getSaldo());
+			System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+			insertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+
+		} catch (SQLException e) {
+			// Handle errors for JDBC
+			e.printStackTrace();
+		} finally {
+
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
 	///// ENkel connection och query, kan ändras eftersom, bra att ha och ta ifrån
 	///// den kod man behöver
 	public void selectFromSomeTable() {
@@ -964,7 +1121,17 @@ public class Db {
 			}
 		}
 	}
+
 	////////// NEDAN setters getters and override
+
+	// GET and Setter PlayerName
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
 
 	public String getDealer() {
 		return dealer;
@@ -1063,21 +1230,6 @@ public class Db {
 		this.dburl = dburl;
 	}
 
-	@Override
-	public String toString() {
-		return "Db [playerName=" + playerName + ", dealer=" + dealer + ", saldo=" + saldo + ", highscore=" + highscore
-				+ ", menu=" + menu + ", sql=" + sql + ", connect=" + connect + ", statement=" + statement
-				+ ", preparedStatement=" + preparedStatement + ", resultSet=" + resultSet + ", sc=" + sc + ", pass="
-				+ pass + ", user=" + user + ", dburl=" + dburl + ", connectMethod()=" + connectMethod()
-				+ ", getPlayerName()=" + getPlayerName() + ", getDealer()=" + getDealer() + ", getName()=" + getName()
-				+ ", getSaldo()=" + getSaldo() + ", getMenu()=" + getMenu() + ", getConnect()=" + getConnect()
-				+ ", getStatement()=" + getStatement() + ", getPreparedStatement()=" + getPreparedStatement()
-				+ ", getResultSet()=" + getResultSet() + ", getSc()=" + getSc() + ", getPass()=" + getPass()
-				+ ", getUser()=" + getUser() + ", getDburl()=" + getDburl() + ", getHighscore()=" + getHighscore()
-				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
-				+ "]";
-	}
-
 	public int getHighscore() {
 		return highscore;
 	}
@@ -1093,6 +1245,8 @@ public class Db {
 	public void setHighscore(int highscore) {
 		this.highscore = highscore;
 	}
+
+	////////////////
 
 	// END
 }
