@@ -1092,13 +1092,13 @@ public class Db {
 			// ='" + playerName + "'");
 			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
 			// playerName + "'");
-			System.out.println(playerName + " current balance: " + getSaldo());
+			System.out.println(getName() + " current balance: " + getSaldo());
 			System.out.println(playerName + " insert money:");
 			Insertsaldo = sc.nextInt();
 			Updatedsaldo = (getSaldo() + Insertsaldo);
 			setSaldo(Updatedsaldo);
-			System.out.println(playerName + " updated balance is now: " + "  " + getSaldo());
-			InGameInsertIntoTable(playerName, highscore, saldo, connect);
+			System.out.println(getName() + " updated balance is now: " + "  " + getSaldo());
+			InGameInsertIntoTable(getName(), highscore, saldo, connect);
 			// InGameInsertIntoTable(playerName, getSaldo(), getHighscore(), connect);
 
 		} finally {
@@ -1109,12 +1109,11 @@ public class Db {
 	// Insert
 	void InGameInsertIntoTable(String playerName, int highscore, int saldo, Connection connect) {
 
-		try {
-			preparedStatement = connect.prepareStatement("insert into BlackJack values (default,?,?,?)");
+		try { //UPDATE table SET credit = '+7' WHERE id='1'
+			preparedStatement = connect.prepareStatement("UPDATE BlackJack SET saldo=(?)");
 
-			preparedStatement.setString(1, playerName);
-			preparedStatement.setInt(2, highscore);
-			preparedStatement.setInt(3, saldo);
+			
+			preparedStatement.setInt(1,  getSaldo());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
