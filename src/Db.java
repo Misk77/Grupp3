@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 /* 
- * INFO ABOUT this file:
+ * INFO ABOUT Db file:
  * Admin Tool Methods:
- * First its ADMIN TOOL MENU METHODS, with open connection and close connectionafter every single methods/ for seperate methods for admin to use
+ * First its ADMIN TOOL MENU METHODS, with open connection and close connection after every single methods/ for seperate methods for admin to use
  * Below this is the InGameMethods
  * InGameMethods:
- * This is with a method whts open connection and has the connection til player exit the game and players info get updated
+ * This is with a method whats open connection and has the connection til the player exit the game and players info get updated
  * exempel:
  * InGameConnection - hold the connection open the whole game, then goes in i different methods and do its work, 
  * then players exit we call the update then close connection methods
@@ -156,62 +156,7 @@ public class Db {
 	}
 ////////////////////////////// DATABASE STUFF INDELAT I METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	////// Different Connection/close Methods \\\\\\\\\\\\\\
-
-	// Connection method 29 dec // Stänger inte connection, alltid öppen tills man
-	// använder inGameCloseConn
-	Connection connectMethod() {
-		System.out.println("Connecting to a selected database...");
-		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
-
-			System.out.println("Connected database successfully..." + dburl);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return connect;
-	}
-
-	// Connect to BlackJackDb
-	public Connection inGameOpenConn() {
-		System.out.println("Connecting to a selected database...");
-		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
-
-			System.out.println("Connected database successfully..." + dburl);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return connect;
-	}
-
-	// Close db connection
-	public void inGameCloseConn() {
-		try {
-			System.out.println("Closing  BlackJackDb... ");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-		}
-	}
+	
 
 	//
 	////// CREATE DATABASE
@@ -1000,6 +945,52 @@ public class Db {
 	
 ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
+	
+//////Different Connection/close Methods \\\\\\\\\\\\\\
+
+	// Connection method 29 dec // Stänger inte connection, alltid öppen tills man
+	// använder inGameCloseConn
+	Connection connectMethod() {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+
+			System.out.println("Connected database successfully..." + dburl);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return connect;
+	}
+
+	// Connect to BlackJackDb
+	public Connection inGameOpenConn() {
+		System.out.println("Connecting to a selected database...");
+		try {
+			connect = DriverManager.getConnection(dburl, user, pass);
+
+			System.out.println("Connected database successfully..." + dburl);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return connect;
+	}
+
+	// Close db connection
+	public void inGameCloseConn() {
+		try {
+			System.out.println("Closing  BlackJackDb... ");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	// Koll saldo hos spelaren
 	public int inGameGetSaldo(String pname) {
 		getSaldo();
