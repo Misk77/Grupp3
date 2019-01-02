@@ -8,7 +8,18 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
-
+/* 
+ * INFO ABOUT this file:
+ * Admin Tool Methods:
+ * First its ADMIN TOOL MENU METHODS, with open connection and close connectionafter every single methods/ for seperate methods for admin to use
+ * Below this is the InGameMethods
+ * InGameMethods:
+ * This is with a method whts open connection and has the connection til player exit the game and players info get updated
+ * exempel:
+ * InGameConnection - hold the connection open the whole game, then goes in i different methods and do its work, 
+ * then players exit we call the update then close connection methods
+ * 
+ */
 public class Db {
 	// player
 	private String playerName;
@@ -27,17 +38,17 @@ public class Db {
 	Scanner sc = new Scanner(System.in);
 
 	// För att använda vår onlineDB, alltid ONLINE host Hostinger.eu
-	/*
-	 * private String pass = "mi235277sk"; private String user = "u209758462_misk7";
-	 * private String dburl =
-	 * "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
-	 */
+	
+	  private String pass = "mi235277sk"; private String user = "u209758462_misk7";
+	  private String dburl =
+	  "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
+	 
 	// För att testa lokalt host: dusjälv.se
-
+/*
 	private String dburl = "jdbc:mysql://localhost/feedback?";
 	private String user = "root";
 	private String pass = "root";
-
+*/
 	// METHOD MENU
 	public void menu() {
 		while (true) {
@@ -52,7 +63,7 @@ public class Db {
 						+ "\n[12]->InsertTestPlayers : " + "\n[13]-> Highscore Lista : "
 						+ "\n[14]->PlayerUpdateTheSaldo : " + "\n[15]->inGameDecrBalance: "
 						+ "\n[16]->inGameIncrBalance: " + "\n[17]->connectMethod: " + "\n[18]->inGameOpenConn: " + "\n[19]->inGameCloseConn: "
-						+ "\n[20]->????: " + "\n[0]->Go/Return to the GAME MENU " + "\n|============================|"
+						+ "\n[20]->InGamePlayerUpdateSaldo: "+ "\n[21]->getsaldoPlayer: " + "\n[22]->inGameAddPlayer: "+ "\n[0]->Go/Return to the GAME MENU " + "\n|============================|"
 						+ "\n|----------------------------|" + "\n|---------- Grupp3 ----------|"
 						+ "\n|----------------------------|" + "\n|============================|");
 
@@ -119,10 +130,13 @@ public class Db {
 					inGameCloseConn();
 					break;
 				case 20:
-					// ???
+					InGamePlayerUpdateSaldo(saldo);
 					break;
 				case 21:
-					// ???
+					getsaldoPlayer(dburl);
+					break;
+				case 22:
+					inGameAddPlayer(playerName, saldo);
 					break;
 				case 0:
 					System.out.println("Return to the GAME MENU");
@@ -974,7 +988,18 @@ public class Db {
 		// Kolla playerName in db
 		return false;
 	}
-
+	/*
+ ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
+	* InGameMethods:
+		 * This is with a method whts open connection and has the connection til player exit the game and players info get updated
+		 * exempel:
+		 * InGameConnection - hold the connection open the whole game, then goes in i different methods and do its work, 
+		 * then players exit we call the update then close connection methods
+		 * */
+	
+///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 	// Koll saldo hos spelaren
 	public int inGameGetSaldo(String pname) {
 		getSaldo();
@@ -983,35 +1008,25 @@ public class Db {
 
 	// lägga till spelare
 	public void inGameAddPlayer(String pname, int newPlayerBalance) {
-		// addPlayer();
+		// addPlayers();
 
-		/*
-		 * try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch
-		 * (ClassNotFoundException e) { e.printStackTrace(); } try { try { connect =
-		 * DriverManager.getConnection(dburl, user, pass); } catch (SQLException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); }
-		 * System.out.println("Players already exist: "); // playerInfo("Michel",
-		 * connect); System.out.println(); while (true) {
-		 * 
-		 * System.out.
-		 * println("*********************************\n*Type [ready] for start playing!*"
-		 * ); System.out.println("*********************************");
-		 * System.out.println("Enter player name:"); String name = sc.next(); if
-		 * (name.equalsIgnoreCase("ready")) break; setPlayerName(name);
-		 * 
-		 * System.out.printf("" + getName(), ": current balance: ", setSaldo(0));
-		 * System.out.println(" money insert:"); saldo = sc.nextInt(); setSaldo(saldo);
-		 * System.out.println(getName() + " updated balance now: " + " " + getSaldo());
-		 * insertIntoTable(name, highscore, saldo, connect);
-		 * System.out.println("Record is updated to BlackJack table!");
-		 * System.out.println("Players are inserted into BlackJack successfully...");
-		 * 
-		 * } } finally {
-		 * 
-		 * } }
-		 * 
-		 * 
-		 */
+		 while (true) {
+		 
+		  System.out.
+		  println("*********************************\n*Type [ready] for start playing!*"
+		  ); System.out.println("*********************************");
+		  System.out.println("Enter player name:"); String name = sc.next(); if
+		  (name.equalsIgnoreCase("ready")) break; setPlayerName(name);
+		  
+		  System.out.printf("" + getName(), ": current balance: ", setSaldo(0));
+		  System.out.println(" money insert:"); saldo = sc.nextInt(); setSaldo(saldo);
+		  System.out.println(getName() + " updated balance now: " + " " + getSaldo());
+		  insertIntoTable(name, highscore, saldo, connect);
+		  System.out.println("Record is updated to BlackJack table!");
+		  System.out.println("Players are inserted into BlackJack successfully...");
+		  
+		
+		 }
 
 	}
 
@@ -1082,6 +1097,33 @@ public class Db {
 		}
 		return;
 	}
+	// If plyaer wanna insert more money during game mode
+				public boolean InGamePlayerUpdateSaldo(int saldo) {
+					
+					try {
+						// update player in blacjjackgame - ("Select * from BlackJack where playerName
+						// ='" + playerName + "'");
+						// String strUpdate = ("update saldo from BlackJack where playerName ='" +
+						// playerName + "'");
+						System.out.printf( ": current balance: ", getSaldo());
+						System.out.println(" insert money:");
+						saldo = sc.nextInt();
+						setSaldo(saldo);
+						System.out.println(" updated balance is now: " + " " + getSaldo());
+
+						insertIntoTable(playerName, getSaldo(), getHighscore(), connect);
+
+					} finally {
+
+						try {
+							connect.close();
+						} catch (SQLException e) {
+							System.out.println(e);
+							e.printStackTrace();
+						}
+					}
+					return true;
+				}
 
 	///// ENkel connection och query, kan ändras eftersom, bra att ha och ta ifrån
 	///// den kod man behöver
