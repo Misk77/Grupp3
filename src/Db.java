@@ -44,6 +44,7 @@ public class Db {
 	private String user = "u209758462_misk7";
 	private String dburl = "jdbc:mysql://sql150.main-hosting.eu/u209758462_miskb?";
 	private int Insertsaldo;
+	private int Updatedsaldo;
 
 	// För att testa lokalt host: dusjälv.se
 	/*
@@ -54,18 +55,18 @@ public class Db {
 	public void menu() {
 		while (true) {
 			try {
-
+				
 				System.out.println("|============================|" + "\n|------  Database Menu -------|"
 						+ "\n|---- BLackJack DATABASE ----|" + "\n|============================|"
 						+ "\n[1]-->Create Database: " + "\n[2]-->Create TABLE:  " + "\n[3]-->Create players: "
-						+ "\n[4]-->Describe BLackJack tabell: " + "\n[5]-->Select * FROM BLackJack: "
+						+ "\n[4]-->Describe BLackJack tabell: " + "\n[5]-->players records: "
 						+ "\n[6]-->Select Records: " + "\n[7]-->Update All Saldo To 200:  " + "\n[8]-->Delete Records: "
 						+ "\n[9]-->Drop Table: " + "\n[10]->Player Info: " + "\n[11]->Search Player: "
 						+ "\n[12]->InsertTestPlayers : " + "\n[13]-> Highscore Lista : "
 						+ "\n[14]->PlayerUpdateTheSaldo : " + "\n[15]->inGameDecrBalance: "
 						+ "\n[16]->inGameIncrBalance: " + "\n[17]->connectMethod: " + "\n[18]->inGameOpenConn: "
 						+ "\n[19]->inGameCloseConn: " + "\n[20]->InGamePlayerUpdateSaldo: " + "\n[21]->getsaldoPlayer: "
-						+ "\n[22]->inGameAddPlayer: " + "\n[0]->Go/Return to the GAME MENU "
+						+ "\n[22]->inGameAddPlayer: " + "\n[23]->inGamePlayersRecord: "+ "\n[0]->Go/Return to the GAME MENU "
 						+ "\n|============================|" + "\n|----------------------------|"
 						+ "\n|---------- Grupp3 ----------|" + "\n|----------------------------|"
 						+ "\n|============================|");
@@ -88,7 +89,7 @@ public class Db {
 					describeTable();
 					break;
 				case 5:
-					selectFromtable();
+					playersRecord();
 					break;
 				case 6:
 					selectRecords();
@@ -138,8 +139,11 @@ public class Db {
 				case 21:
 					getsaldoPlayer(dburl);
 					break;
-				case 22:
+				case 22:  
 					inGameAddPlayer(playerName, saldo);
+					break;
+				case 23:
+					inGamePlayersRecord();
 					break;
 				case 0:
 					System.out.println("Return to the GAME MENU");
@@ -364,8 +368,8 @@ public class Db {
 		}
 	}
 
-	// SELECT * FROM BlackJack
-	void selectFromtable() {
+	// playersRecord
+	void playersRecord() {
 		System.out.println("Connecting to a selected database...");
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
@@ -549,37 +553,39 @@ public class Db {
 	public boolean playerUpdateTheSaldo(int saldo) {
 		System.out.println("Connecting to a selected database...");
 		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
+			try {
+				connect = DriverManager.getConnection(dburl, user, pass);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("Connected database successfully..." + dburl);
 			// update player in blacjjackgame - ("Select * from BlackJack where playerName
 			// ='" + playerName + "'");
 			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
 			// playerName + "'");
-			System.out.printf(playerName + ": current balance: ", getSaldo());
-			System.out.println(" insert money:");
-			saldo = sc.nextInt();
-			setSaldo(saldo);
-			System.out.println(playerName + " updated balance is now: " + " " + getSaldo());
 
-			setSaldo(saldo);
-			System.out.println(playerName + "Saldo  is now: " + " " + getSaldo());
-			System.out.println(playerName + " updated balance now: " + " " + getSaldo());
-			insertIntoTable(playerName, getSaldo(), getHighscore(), connect);
+				System.out.println(playerName + " current balance: " + getSaldo());
+				System.out.println(playerName + " insert money:");
+				Insertsaldo = sc.nextInt();
+				Updatedsaldo = (getSaldo() + Insertsaldo);
+				setSaldo(Updatedsaldo);
+				System.out.println(playerName + " updated balance is now: " + "  " + getSaldo());
+				InGameInsertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+				// InGameInsertIntoTable(playerName, getSaldo(), getHighscore(), connect);
 
-		} catch (SQLException e) {
-			// Handle errors for JDBC
-			e.printStackTrace();
-		} finally {
+			} finally {
 
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				try {
+					connect.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+					e.printStackTrace();
+				}
 			}
+			return true;
 		}
-		return true;
-	}
+	
 
 	/// UPDATE check if update went through
 	// all player under 200 get 200 to play with
@@ -1042,7 +1048,7 @@ public class Db {
 			// String strUpdate = ("update saldo from BlackJack where playerName ='" +
 			// playerName + "'");
 			setSaldo(saldo);
-			insertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+			InGameInsertIntoTable(getName(),  getHighscore(),getSaldo(), connect);
 
 		} finally {
 
@@ -1071,7 +1077,7 @@ public class Db {
 			// playerName + "'");
 			setSaldo(saldo);
 
-			InGameInsertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+			InGameInsertIntoTable(getName(),  getHighscore(),getSaldo(), connect);
 
 		} finally {
 
@@ -1079,7 +1085,7 @@ public class Db {
 	}
 
 	// If plyaer wanna insert more money during game mode
-	public boolean InGamePlayerUpdateSaldo(int Updatedsaldo) {
+	public void InGamePlayerUpdateSaldo(int Updatedsaldo) {
 
 		try {
 			// update player in blacjjackgame - ("Select * from BlackJack where playerName
@@ -1092,19 +1098,12 @@ public class Db {
 			Updatedsaldo = (getSaldo() + Insertsaldo);
 			setSaldo(Updatedsaldo);
 			System.out.println(playerName + " updated balance is now: " + "  " + getSaldo());
-			InGameInsertIntoTable(getName(), getSaldo(), getHighscore(), connect);
+			InGameInsertIntoTable(playerName, highscore, saldo, connect);
 			// InGameInsertIntoTable(playerName, getSaldo(), getHighscore(), connect);
 
 		} finally {
 
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
 		}
-		return true;
 	}
 
 	// Insert
@@ -1124,6 +1123,57 @@ public class Db {
 
 		System.out.println(getName() + " current balance: " + getSaldo());
 	}
+	// playersRecord
+		void inGamePlayersRecord() {
+			
+			
+			try {
+			
+				try {
+					statement = connect.createStatement();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				String sql = "SELECT playerName ,saldo FROM BlackJack";
+				try {
+					resultSet = statement.executeQuery(sql);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// Extract data from result set
+				String strSelect = "select * from BlackJack";
+				System.out.println("The SQL query is: " + strSelect); // Echo For debugging
+				System.out.printf(" %10s %15s %10s%n",  "PLAYER", "HIGHSCORE", "SALDO");
+				try {
+					resultSet = statement.executeQuery(strSelect);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					while (resultSet.next()) { // Move the cursor to the next row
+						System.out.println(resultSet.getString("playerName") + ",         "
+								+ resultSet.getString("highscore") + ",       " + resultSet.getString("Saldo"));
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			}
+				finally {
+
+				}
+		}
 
 //////////////////////////////////////////////////////////  JUST A LOOK TO GRAB CODE
 	///// ENkel connection och query, kan ändras eftersom, bra att ha och ta ifrån
