@@ -155,9 +155,6 @@ public class Db {
 
 	}
 ////////////////////////////// DATABASE STUFF INDELAT I METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-	
-
 	//
 	////// CREATE DATABASE
 	void createDatabase() {
@@ -937,6 +934,8 @@ public class Db {
  ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 	* InGameMethods:
+	* For giving smoothness nad perforamce speed while using Db connection, so same connetion will be used for the player
+	* 
 		 * This is with a method whts open connection and has the connection til player exit the game and players info get updated
 		 * exempel:
 		 * InGameConnection - hold the connection open the whole game, then goes in i different methods and do its work, 
@@ -946,7 +945,7 @@ public class Db {
 ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 ///////////////////////////////////////////////////////////  InGameMethods  /////////////////////////////////////////////////////////// 
 	
-//////Different Connection/close Methods \\\\\\\\\\\\\\
+////// Firstv Different Connection/close Methods \\\\\\\\\\\\\\
 
 	// Connection method 29 dec // Stänger inte connection, alltid öppen tills man
 	// använder inGameCloseConn
