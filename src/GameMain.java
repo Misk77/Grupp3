@@ -73,10 +73,10 @@ public class GameMain {
 
 	public static void main(String[] args) {
 		
-		theMenu.mainMenu(s, Blackjackdb);
+		//theMenu.mainMenu(s, Blackjackdb);
 		//ExternStart ext = new ExternStart(); ext.init();
 		//menuStartGame();
-		//Blackjackdb.menu();
+		Blackjackdb.menu();
 		
 
 	
