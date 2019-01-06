@@ -152,7 +152,7 @@ public class Db {
 
 				}
 			} catch (Exception e) {
-
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 
@@ -246,7 +246,7 @@ public class Db {
 			connect = DriverManager.getConnection(dburl, user, pass);
 		} catch (SQLException e) {
 
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			preparedStatement = connect.prepareStatement("insert into BlackJack values (default,?,?,?)");
@@ -257,7 +257,7 @@ public class Db {
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		System.out.println();
@@ -268,6 +268,9 @@ public class Db {
 	// DESCRIBE
 	void describeTable() {
 		System.out.println("Connecting to a selected database...");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 
@@ -296,27 +299,28 @@ public class Db {
 
 				}
 			}
-		} catch (SQLException se) {
-
+		} catch (SQLException e1) {
+			System.out.printf("Something went wrong:(", e1);
 		} finally {
 			try {
 				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
 			try {
 				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
 			try {
 				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
+		}
 		}
 	}
 
@@ -324,6 +328,9 @@ public class Db {
 	// playersRecord
 	void playersRecord() {
 		System.out.println("Connecting to a selected database...");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 
@@ -354,27 +361,32 @@ public class Db {
 			System.out.println("Total number of records = " + rowCount);
 			System.out.println();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException e1) {
+			System.out.printf("Something went wrong:(", e1);
 		}
 
 		try {
 			statement.close();
-		} catch (SQLException e) {
-			System.out.println(e);
-			e.printStackTrace();
+		} catch (SQLException e1) {
+			System.out.printf("Something went wrong:(", e1);
+			
 		}
 		try {
 			connect.close();
-		} catch (SQLException e) {
-			System.out.println(e);
-			e.printStackTrace();
+		} catch (SQLException e1) {
+			System.out.printf("Something went wrong:(", e1);
+			
+		}
 		}
 	}
 
 	// SELECT * FROM BlackJack
 	void selectFromtable() {
 		System.out.println("Connecting to a selected database...");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e1) {
+			System.out.printf("Something went wrong:(", e1);
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 
@@ -407,34 +419,39 @@ public class Db {
 			System.out.println("Total number of records = " + rowCount);
 			System.out.println();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException e11) {
+			System.out.printf("Something went wrong:(", e11);
 		} finally {
 			try {
 				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e11) {
+				System.out.printf("Something went wrong:(", e11);
+				
 			}
 			try {
 				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e11) {
+				System.out.printf("Something went wrong:(", e11);
+				
 			}
 			try {
 				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e11) {
+				System.out.printf("Something went wrong:(", e11);
+				
 			}
 		}
+		}
+		
 	}
 	// Close the resources - Done automatically by try-with-resources//bra att veta
 
 	// SELECT RECORDS
 	void selectRecords() {
 		System.out.println("Connecting to a selected database...");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 
@@ -455,29 +472,30 @@ public class Db {
 						+ resultSet.getString("Saldo"));
 			}
 			resultSet.close();
-		} catch (SQLException e) {
+		} catch (SQLException e1) {
 			// Handle errors for JDBC
-			System.out.println(e);
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e1);
+			
 		} finally {
 			try {
 				resultSet.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
 			try {
 				statement.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
 			try {
 				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
+		}
 		}
 	}
 
@@ -497,20 +515,20 @@ public class Db {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 		}
 	}
@@ -536,15 +554,15 @@ public class Db {
 			insertIntoTable(getName(), getSaldo(), inGameGetHighScore(playerName), connect);
 
 		} catch (SQLException e) {
-			// Handle errors for JDBC
-			e.printStackTrace();
+			
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 
 			try {
 				connect.close();
-			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+			} catch (SQLException e1) {
+				System.out.printf("Something went wrong:(", e1);
+				
 			}
 		}
 		return true;
@@ -574,25 +592,25 @@ public class Db {
 						+ resultSet.getString("Saldo"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 		}
 	}
@@ -612,25 +630,25 @@ public class Db {
 			int countDeleted = statement.executeUpdate(sqlDelete);
 			System.out.println(countDeleted + " records deleted.\n");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 		}
 	}
@@ -640,13 +658,13 @@ public class Db {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			try {
 				connect = DriverManager.getConnection(dburl, user, pass);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			System.out.println("Players already exist: ");
 			// playerInfo("Michel", connect);
@@ -705,25 +723,25 @@ public class Db {
 						+ resultSet.getString("Saldo"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 		}
 	}
@@ -734,13 +752,13 @@ public class Db {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		System.out.println("Connected database successfully..." + dburl);
@@ -749,21 +767,21 @@ public class Db {
 		try {
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		System.out.println("Enter Player you looking for: ");
 		String playerName = sc.next();
 		try {
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
+			
 		}
 		try {
 			System.out.printf("%1s %1s %6s%n", "id", "playerName", "Saldo");
 			resultSet = statement.executeQuery("Select * from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			while (resultSet.next()) {
@@ -772,25 +790,25 @@ public class Db {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
+				
 			}
 		}
 	}
@@ -802,13 +820,13 @@ public class Db {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		System.out.println("Connected database successfully..." + dburl);
@@ -817,13 +835,13 @@ public class Db {
 		try {
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			System.out.printf("%1s %n", "Saldo");
 			resultSet = statement.executeQuery("Select saldo from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			while (resultSet.next()) {
@@ -831,25 +849,23 @@ public class Db {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 	}
@@ -869,25 +885,22 @@ public class Db {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 	}
@@ -907,7 +920,7 @@ public class Db {
 				// Setup the connection with the DB
 				connect = DriverManager.getConnection(dburl, user, pass);
 			} catch (SQLException e) {
-
+				System.out.printf("Something went wrong:(", e);
 			}
 
 			try {
@@ -961,23 +974,23 @@ public class Db {
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-			// Handle errors for JDBC
-			System.out.printf("Somthing went wrong:(", e);
+			
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 	}
@@ -1003,23 +1016,22 @@ public class Db {
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-			// Handle errors for JDBC
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 	}
@@ -1045,21 +1057,21 @@ public class Db {
 				preparedStatement = connect.prepareStatement("UPDATE BlackJack SET saldo=(?)");
 			} catch (SQLException e) {
 
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 
 			try {
 				preparedStatement.setInt(1, getSaldo());
 			} catch (SQLException e) {
 
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 
 			try {
 				preparedStatement.executeUpdate();
 			} catch (SQLException e) {
 
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			System.out.println(getName() + " updated balance is now: " + "  " + getSaldo());
 
@@ -1068,7 +1080,7 @@ public class Db {
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 		return;
@@ -1086,8 +1098,7 @@ public class Db {
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 
 		}
 		inGameCloseConn();
@@ -1105,7 +1116,7 @@ public class Db {
 
 			resultSet = statement.executeQuery("Select highscore from BlackJack where playerName ='" + pname + "'");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			try {
@@ -1113,14 +1124,14 @@ public class Db {
 					try {
 						plHighscoreStr = resultSet.getString("highscore");
 					} catch (SQLException e) {
-						e.printStackTrace();
+						System.out.printf("Something went wrong:(", e);
 					}
 					if (plHighscoreStr != null) {
 						// plHighscoreInt = Integer.parseInt(plHighscoreStr);
 						try {
 							plHighscoreInt = Integer.parseInt(plHighscoreStr);
-						} catch (NumberFormatException nfe) {
-							nfe.printStackTrace();
+						} catch (NumberFormatException e) {
+							System.out.printf("Something went wrong:(", e);
 						}
 					}
 					{
@@ -1128,7 +1139,7 @@ public class Db {
 					}
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 		} finally {
 		}
@@ -1151,13 +1162,13 @@ public class Db {
 			try {
 				preparedStatement = connect.prepareStatement("UPDATE BlackJack SET saldo=(?)");
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 
 			try {
 				preparedStatement.setInt(1, getSaldo());
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 
 			try {
@@ -1173,7 +1184,7 @@ public class Db {
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 		return true;
@@ -1184,13 +1195,13 @@ public class Db {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		System.out.println("Connected database successfully..." + dburl);
@@ -1199,14 +1210,14 @@ public class Db {
 		try {
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 
 			System.out.printf("%1s %n", "Saldo");
 			resultSet = statement.executeQuery("Select saldo from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			while (resultSet.next()) {
@@ -1214,24 +1225,22 @@ public class Db {
 			}
 
 		} catch (SQLException e) {
-			System.out.printf("Somthing went wrong:(", e);
+			System.out.printf("Something went wrong:(", e);
 		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.printf("Somthing went wrong:(", e);
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 		return getSaldo();
@@ -1243,19 +1252,19 @@ public class Db {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
 			connect = DriverManager.getConnection(dburl, user, pass);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 	}
 
@@ -1264,20 +1273,17 @@ public class Db {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 			try {
 				connect.close();
 			} catch (SQLException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				System.out.printf("Something went wrong:(", e);
 			}
 		}
 	}
@@ -1294,7 +1300,7 @@ public class Db {
 		try {
 			resultSet = statement.executeQuery("Select saldo from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			while (resultSet.next()) {
@@ -1302,7 +1308,7 @@ public class Db {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		try {
@@ -1311,8 +1317,8 @@ public class Db {
 			} else {
 				plSaldoInt = 0;
 			}
-		} catch (java.lang.NumberFormatException j) {
-			j.printStackTrace();
+		} catch (java.lang.NumberFormatException e) {
+			System.out.printf("Something went wrong:(", e);
 		}
 
 		inGameCloseConn();
@@ -1331,7 +1337,7 @@ public class Db {
 			resultSet = statement
 					.executeQuery("Select playerName from BlackJack where playerName ='" + playerName + "'");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		try {
 			while (resultSet.next()) {
@@ -1405,7 +1411,7 @@ public class Db {
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		inGameCloseConn();
 	}
@@ -1419,7 +1425,7 @@ public class Db {
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.printf("Something went wrong:(", e);
 		}
 		inGameCloseConn();
 	}
