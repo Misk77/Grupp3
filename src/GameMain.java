@@ -117,7 +117,17 @@ public class GameMain {
 			numberOfPlayers++;
 			System.out.printf(text_ask_for_name, numberOfPlayers); 
 			String pname = s.nextLine();
-			if (alphaNumericOnly) {pname = pname.replaceAll("[^A-Za-z0-9]", "");}
+
+
+			if (alphaNumericOnly) {
+				pname = pname.replaceAll("[å]", "a");
+				pname = pname.replaceAll("[Å]", "A");
+				pname = pname.replaceAll("[ä]", "a");
+				pname = pname.replaceAll("[Ä]", "A");
+				pname = pname.replaceAll("[ö]", "o");
+				pname = pname.replaceAll("[Ö]", "O");
+				pname = pname.replaceAll("[^A-Za-z0-9]", "");
+			}
 			if (pname.length() < 2){
 				System.out.println("Name is too short, make sure it's at least 2 characters!");
 				numberOfPlayers--;
