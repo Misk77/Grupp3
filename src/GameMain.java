@@ -212,6 +212,7 @@ public class GameMain {
 	static void startGame(Player[] player, int numberOfPlayers){
 		// Deal two cards each:
 		for (int i=1;i<numberOfPlayers;i++){
+			player[i].setLastBet(0);
 			c = d.getNewCard();
 			player[i].cards[0][0] = c.suit;
 			player[i].cards[0][1] = String.valueOf(c.value);
