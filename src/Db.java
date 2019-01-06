@@ -1420,7 +1420,7 @@ public class Db {
 		inGameOpenConn();
 		int oldSaldo = inGameGetSaldo(pname);
 		int newSaldo = oldSaldo + amount;
-		String sql = "update blackjack set saldo='" + Integer.toString(newSaldo) + "' where playername='" + pname + "'";
+		String sql = "update BlackJack set saldo='" + Integer.toString(newSaldo) + "' where playername='" + pname + "'";
 		try (Connection conn = DriverManager.getConnection(dburl, user, pass);
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);
@@ -1434,7 +1434,7 @@ public class Db {
 		inGameOpenConn();
 		int oldSaldo = inGameGetSaldo(pname);
 		int newSaldo = oldSaldo - amount;
-		String sql = "update blackjack set saldo='" + Integer.toString(newSaldo) + "' where playername='" + pname + "'";
+		String sql = "update BlackJack set saldo='" + Integer.toString(newSaldo) + "' where playername='" + pname + "'";
 		try (Connection conn = DriverManager.getConnection(dburl, user, pass);
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);

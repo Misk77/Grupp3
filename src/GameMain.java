@@ -73,7 +73,7 @@ public class GameMain {
 
 	public static void main(String[] args) {
 		
-		//theMenu.mainMenu(s, Blackjackdb);
+		theMenu.mainMenu(s, Blackjackdb);// Denna vi alltid ska starta med, RIKTIGA SPELE START MENU
 		//ExternStart ext = new ExternStart(); ext.init();
 		//menuStartGame();
 		Blackjackdb.menu();
