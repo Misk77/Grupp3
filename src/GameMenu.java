@@ -6,39 +6,18 @@ import java.awt.image.BufferedImage;
 import java.util.Scanner;
 
 public class GameMenu {
+	static boolean firstOpen = true;
+
 
 	public void mainMenu(Scanner scanner, Db Blackjackdb) {
+		if (firstOpen) {
+			firstOpen = false;
+			GameMain.player[0] = new Player("Dealer", 0); 
+			GameMain.numberOfPlayers = 0;
+			addPlayer(scanner, Blackjackdb);
+		}
 		while (true) {
-			int saldo = 100;
-
-			System.out.println("							  ╔═════════════════════════╗\n"
-					+ "							  ║  Please enter your name ║\n"
-					+ "							  ╚═════════════════════════╝\n");
-			String pname = scanner.next();
-			scanner.nextLine();
-
-			if (pname.equals("thomas")) {
-				//menulogo();
-
-				System.out.println("\n"
-						+ "                                   ╔═══════════════════════════════════════════════════════════════════════════════╗\n"
-						+ "                                   ║          Welcome back " + pname + "! " + "You have "
-						+ saldo + " credits on your account.           ║\n"
-						+ "                                   ╚═══════════════════════════════════════════════════════════════════════════════╝");
-			}
-
-			else {
-				menulogo();
-
-				System.out.println("\n"
-						+ "                                   ╔═══════════════════════════════════════════════════════════════════════════════╗\n"
-						+ "                                                                  Welcome " + pname + "! \n"
-						+ "				║ 		       You're account has been created						║ \n"
-						+ "			   	║ 	    You have recived 100 credits as a gift too your account.				║ \n"
-						+ "                                   ╚═══════════════════════════════════════════════════════════════════════════════╝\n");
-
-			}
-
+			menulogo();
 			System.out.println(
 
 					"							  ╔═════════════════════════╗\n"
@@ -56,13 +35,13 @@ public class GameMenu {
 							+ "							  ║                         ║\n"
 							+ "							  ╚═════════════════════════╝\n"
 
-			);
+					);
 			String choice = scanner.next();
 			scanner.nextLine();
 
 			if (choice.equalsIgnoreCase("S")) { // START GAME
 				System.out.println("START GAME");
-				GameMain.menuStartGame();
+				GameMain.placeBets(GameMain.player, GameMain.numberOfPlayers);
 			} else if (choice.equalsIgnoreCase("E")) { // EXIT
 				System.out.println("Have a nice day!");
 				try {
@@ -82,19 +61,75 @@ public class GameMenu {
 				System.exit(0);
 			} else if (choice.equalsIgnoreCase("D")) { // Go into Db Tool Menu
 				Blackjackdb.login();
-				// Blackjackdb.menu();
+			} else if (choice.equalsIgnoreCase("A")) {
+				addPlayer(scanner, Blackjackdb);
 			} else if (!choice.equalsIgnoreCase("A") && !choice.equalsIgnoreCase("S")
 					&& !choice.equalsIgnoreCase("C")) {
 				System.out.println("Invalid choice, returning to Menu...\n");
 				return;
 			}
+
+
+			
 		}
 	}
+
+
+
+	void addPlayer(Scanner scanner, Db Blackjackdb) {
+
+		for (int w=0; w<20; w++) 
+		{
+			System.out.print("\n\n\n");
+			try{Thread.sleep(20);}
+			catch(InterruptedException ex)
+			{Thread.currentThread().interrupt();}
+		}
+//		
+		
+		int saldo = 0;
+
+		System.out.println("							  ╔═════════════════════════╗\n"
+				+ "							  ║  Please enter your name ║\n"
+				+ "							  ╚═════════════════════════╝\n");
+
+		String pname = scanner.next();
+		scanner.nextLine();
+		
+		
+		String boxSpace1 = GameMain.space( 17 - ( (int) (pname).length()) );
+		String boxSpace2 = GameMain.space( 37 - ( (int) (pname).length()) );
+
+		if (GameMain.Blackjackdb.playerNameExists(pname)){
+			GameMain.numberOfPlayers++;
+			saldo = GameMain.Blackjackdb.inGameGetSaldo(pname);
+			GameMain.player[GameMain.numberOfPlayers] = new Player(pname, saldo);
+			System.out.println("\n"
+					+ "                                  ╔═══════════════════════════════════════════════════════════════════════════════╗\n"
+					+ "                                  ║          Welcome back " + pname + "! " + "You have "
+					+ saldo + " credits on your account."+ boxSpace1 + "║\n"
+					+ "                                  ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}else{
+			GameMain.numberOfPlayers++;
+			GameMain.Blackjackdb.inGameAddPlayer(pname, GameMain.newPlayerBalance);
+			GameMain.player[GameMain.numberOfPlayers] = new Player(pname, GameMain.newPlayerBalance);
+
+			System.out.println("\n"
+					+ "                                   ╔══════════════════════════════════════════════════════════════════════════╗\n"
+					+ "                                   ║                            Welcome " + pname + "!" + boxSpace2  +"║\n"                         
+					+ "                                   ║                    You're account has been created.                      ║ \n"
+					+ "                                   ║ 	    You have recived " + GameMain.newPlayerBalance + " credits as a gift too your account.          ║ \n"
+					+ "                                   ╚══════════════════════════════════════════════════════════════════════════╝\n");
+		}
+
+
+	}
+
 
 	@Override
 	public String toString() {
 		return "GameMenu [getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
-				+ "]";
+		+ "]";
 	}
 
 	void menulogo() {
