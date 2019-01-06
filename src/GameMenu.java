@@ -29,6 +29,8 @@ public class GameMenu {
 							+ "							  ║                         ║\n"
 							+ "							  ║       [A]dd player      ║\n"
 							+ "							  ║                         ║\n"
+							+ "							  ║       [H]ighscore       ║\n"
+							+ "							  ║                         ║\n"
 							+ "							  ║       [D]Admin area     ║\n"
 							+ "							  ║                         ║\n"
 							+ "							  ║         [E]xit          ║\n"
@@ -60,7 +62,9 @@ public class GameMenu {
 				System.out.println("\t\tBye....");
 				System.exit(0);
 			} else if (choice.equalsIgnoreCase("D")) { // Go into Db Tool Menu
-				Blackjackdb.login();
+				Blackjackdb.login();}
+				else if (choice.equalsIgnoreCase("H")) { // Go into Db Tool Menu
+					Blackjackdb.highscorePlayerView();
 			} else if (choice.equalsIgnoreCase("A")) {
 				addPlayer(scanner, Blackjackdb);
 			} else if (!choice.equalsIgnoreCase("A") && !choice.equalsIgnoreCase("S")
