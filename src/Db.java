@@ -99,7 +99,7 @@ public class Db {
 					searchPlayer();
 					break;
 				case 12:
-					insertTestPlayers(playerName, inGameGetHighScore(), saldo, connect);
+					insertTestPlayers(playerName, inGameSetHighScore(playerName, 0), saldo, connect);
 					break;
 				case 13:
 					highscorewithid();
@@ -129,10 +129,10 @@ public class Db {
 					getsaldoFromPlayer(getName());
 					break;
 				case 22:
-					inGameAddPlayer2(playerName, saldo, inGameGetHighScore(), connect);
+					inGameAddPlayer2(playerName, saldo);
 					break;
 				case 23:
-					// inGamePlayersRecord();
+					playersRecord();
 					break;
 				case 24:
 					login();
@@ -141,8 +141,9 @@ public class Db {
 					highscorePlayerView();
 					break;
 				case 0:
-					System.out.println("Return to the GAME MENU");
-					System.exit(0);
+					System.out.println("Returning to the GAME");
+					GameMain.theMenu.mainMenu(GameMain.s, GameMain.Blackjackdb);
+
 					break;
 				default:
 					System.out.println("No such option in menu");
@@ -532,7 +533,7 @@ public class Db {
 			setSaldo(saldo);
 			System.out.println(getName() + "Saldo  is now: " + " " + getSaldo());
 			System.out.println(getName() + " updated balance now: " + " " + getSaldo());
-			insertIntoTable(getName(), getSaldo(), inGameGetHighScore(), connect);
+			insertIntoTable(getName(), getSaldo(), inGameGetHighScore(playerName), connect);
 
 		} catch (SQLException e) {
 			// Handle errors for JDBC
@@ -645,7 +646,6 @@ public class Db {
 			try {
 				connect = DriverManager.getConnection(dburl, user, pass);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("Players already exist: ");
@@ -666,7 +666,7 @@ public class Db {
 				saldo = sc.nextInt();
 				setSaldo(saldo);
 				System.out.println(getName() + " updated balance now: " + " " + getSaldo());
-				insertIntoTable(name, saldo, inGameGetHighScore(), connect);
+				insertIntoTable(name, saldo, inGameGetHighScore(playerName), connect);
 				System.out.println("Record is updated to BlackJack table!");
 				System.out.println("Players are inserted into BlackJack successfully...");
 
@@ -1074,56 +1074,47 @@ public class Db {
 		return;
 	}
 
-//	double inGameSetHighScore(Object setCurrentBet, int i) {
-//		double oldHighscore = inGameSetHighScore(playerName, i);
-//		double newHighscore = oldHighscore + Player.getWinFactor();
-//		String sql = "update BlackJack set highscore='" + Integer.toString((int) newHighscore) + "' where playerName='"
-//				+ playerName + "'";
-//		try (Connection conn = DriverManager.getConnection(dburl, user, pass);
-//				Statement stmt = conn.createStatement();) {
-//			stmt.executeUpdate(sql);
-//		} catch (SQLException e) {
-//			System.out.printf("Somthing went wrong:(", e);
-//			e.printStackTrace();
-//
-//		}
-//		return newHighscore;
-//	}
+	////// InGameSETHIGHSCORE
+	int inGameSetHighScore(String pname, int highscore) {
+		inGameOpenConn();
+		int oldHighscore = inGameGetHighScore(playerName); // Här ska higscore in
+		int newHighscore = oldHighscore;// Ta ifrån? ;
+		sql = "update BlackJack set highscore='" + Integer.toString((int) newHighscore) + "' where playername='" + pname
+				+ "'";
+
+		try (Connection conn = DriverManager.getConnection(dburl, user, pass);
+				Statement stmt = conn.createStatement();) {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.printf("Somthing went wrong:(", e);
+			e.printStackTrace();
+
+		}
+		inGameCloseConn();
+		return newHighscore;
+	}
 
 	// INGAME GETHIGHSCORE
-	int inGameGetHighScore() {
+	int inGameGetHighScore(String pname) {
 
 		String plHighscoreStr = "";
 		int plHighscoreInt = 0;
+
+		try {
+			inGameOpenConn();
+
+			resultSet = statement.executeQuery("Select highscore from BlackJack where playerName ='" + pname + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		try {
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				connect = DriverManager.getConnection(dburl, user, pass);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				statement = connect.createStatement();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				resultSet = statement
-						.executeQuery("Select highscore from BlackJack where playerName ='" + playerName + "'");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
 				while (resultSet.next()) {
-					plHighscoreStr = resultSet.getString("highscore");
+					try {
+						plHighscoreStr = resultSet.getString("highscore");
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 					if (plHighscoreStr != null) {
 						// plHighscoreInt = Integer.parseInt(plHighscoreStr);
 						try {
@@ -1131,18 +1122,17 @@ public class Db {
 						} catch (NumberFormatException nfe) {
 							nfe.printStackTrace();
 						}
-					} else {
-						plHighscoreInt = 0;
+					}
+					{
+
 					}
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} catch (java.lang.NumberFormatException j) {
-			System.out.printf("Somthing went wrong:(", j);
-			j.printStackTrace();
+		} finally {
 		}
+		inGameCloseConn();
 		return plHighscoreInt;
 	}
 
@@ -1375,19 +1365,9 @@ public class Db {
 		inGameCloseConn();
 	}
 
-	void inGameAddPlayer2(String string, int i, int j, Connection connect2) {
+	void inGameAddPlayer2(String pname, int credits) {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			try {
-				connect = DriverManager.getConnection(dburl, user, pass);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			inGameOpenConn();
 			System.out.println("Players already exist: ");
 			// playerInfo("Michel", connect);
 			System.out.println();
@@ -1406,7 +1386,7 @@ public class Db {
 				saldo = sc.nextInt();
 				setSaldo(saldo);
 				System.out.println(getName() + " updated balance now: " + " " + getSaldo());
-				insertIntoTable(name, saldo, inGameGetHighScore(), connect);
+				insertIntoTable(name, saldo, inGameGetHighScore(playerName), connect);
 				System.out.println("Record is updated to BlackJack table!");
 				System.out.println("Players are inserted into BlackJack successfully...");
 
@@ -1461,13 +1441,13 @@ public class Db {
 			menu();
 		} else if (username.equals(Username)) {
 			System.out.println("Invalid Password!");
-			GameMain.menuStartGame();
+			GameMain.theMenu.mainMenu(GameMain.s, GameMain.Blackjackdb);
 		} else if (password.equals(Password)) {
 			System.out.println("Invalid Username!");
-			GameMain.menuStartGame();
+			GameMain.theMenu.mainMenu(GameMain.s, GameMain.Blackjackdb);
 		} else {
 			System.out.println("Invalid Username & Password!");
-			GameMain.menuStartGame();
+			GameMain.theMenu.mainMenu(GameMain.s, GameMain.Blackjackdb);
 		}
 	}
 
