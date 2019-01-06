@@ -76,7 +76,7 @@ public class GameMain {
 		theMenu.mainMenu(s, Blackjackdb);// Denna vi alltid ska starta med, RIKTIGA SPELE START MENU
 		//ExternStart ext = new ExternStart(); ext.init();
 		//menuStartGame();
-		Blackjackdb.menu();
+		//Blackjackdb.menu();
 		
 
 	
@@ -499,19 +499,23 @@ public class GameMain {
 			}
 
 		}
-		
+
 		// Gather the rest of the info now that all is settled:
 		for (int i=1;i<numberOfPlayers+1;i++){
-			
+
 			if (player[i].getWinFactor() == 0.00) {
 				player[i].setLastResult(-player[i].getLastBet());
 			}
 			else if (player[i].getWinFactor() == 1.00){
 				player[i].setLastResult(0);
 			}
-			else {player[i].setLastResult( (int)(player[i].getLastBet() * player[i].getWinFactor()));}
+			else {
+				player[i].setLastResult( (int)(player[i].getLastBet() * player[i].getWinFactor()));
+				Blackjackdb.inGameSetHighScore(player[i].getPlayerName(),(Blackjackdb.inGameGetHighScore(player[i].getPlayerName())) + player[i].getLastResult());
+			}
 		}
 	}
+	
 
 	static void drawBoard(Player[] player, int numberOfPlayers, boolean revealDealersSecond) {
 
@@ -675,12 +679,12 @@ public class GameMain {
 		String part3;
 		String part2;
 		if (player[playerNum].getLastBet()>0) {
-			if (player[playerNum].getLastResult()>0) {posNeg = "+";}
-			else if (player[playerNum].getLastResult()==0) {posNeg = "+/-";}
-			else {posNeg = "";}
+			if (player[playerNum].getLastResult()>0) {posNeg = "Won ";}
+			else if (player[playerNum].getLastResult()==0) {posNeg = "Tie +/-";}
+			else {posNeg = "Lost ";}
 			
 		part1 = " Bet:"+Integer.toString(player[playerNum].getLastBet());
-		part3 = "Result:"+posNeg+Integer.toString(player[playerNum].getLastResult() ) + " ";
+		part3 = posNeg+Integer.toString(player[playerNum].getLastResult() ) + " ";
 		part2 = space( 25-( (part1+part3).length()) );
 		}
 		else {

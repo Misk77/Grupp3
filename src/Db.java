@@ -1024,11 +1024,9 @@ public class Db {
 	////// InGameSETHIGHSCORE
 	int inGameSetHighScore(String pname, int highscore) {
 		inGameOpenConn();
-		int oldHighscore = inGameGetHighScore(playerName); // Här ska higscore in
-		int newHighscore = oldHighscore;// Ta ifrån? ;
+		int newHighscore = highscore;
 		sql = "update BlackJack set highscore='" + Integer.toString((int) newHighscore) + "' where playername='" + pname
 				+ "'";
-
 		try (Connection conn = DriverManager.getConnection(dburl, user, pass);
 				Statement stmt = conn.createStatement();) {
 			stmt.executeUpdate(sql);

@@ -97,7 +97,7 @@ public class GameMenu {
 		scanner.nextLine();
 		
 		
-		String boxSpace1 = GameMain.space( 17 - ( (int) (pname).length()) );
+		String boxSpace1 = GameMain.space( 19 - ( (int) ((pname +(Integer.toString(saldo))) ).length()) );
 		String boxSpace2 = GameMain.space( 37 - ( (int) (pname).length()) );
 
 		if (GameMain.Blackjackdb.playerNameExists(pname)){
@@ -109,6 +109,9 @@ public class GameMenu {
 					+ "                                  ║          Welcome back " + pname + "! " + "You have "
 					+ saldo + " credits on your account."+ boxSpace1 + "║\n"
 					+ "                                  ╚═══════════════════════════════════════════════════════════════════════════════╝");
+			System.out.println("                                  Your Highscore: " + Blackjackdb.inGameGetHighScore(pname));
+			
+			
 		}else{
 			GameMain.numberOfPlayers++;
 			GameMain.Blackjackdb.inGameAddPlayer(pname, GameMain.newPlayerBalance);
