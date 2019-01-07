@@ -937,41 +937,32 @@ public class Db {
 	}
 
 	void highscorePlayerView() {
-		System.out.println("Connecting to a selected database...");
-		try {
-			connect = DriverManager.getConnection(dburl, user, pass);
-
-			System.out.println("Connected database successfully..." + dburl);
-
-			System.out.println("Creating statement...");
-			statement = connect.createStatement();
-
-			// String sql = "SELECT id,playerName ,highscore,saldo FROM BlackJack";
-			String sql = ("SELECT playerName, highscore FROM BlackJack \r\n" + "ORDER BY highscore DESC");
-			System.out.println("The SQL query is: " + sql); // Echo For debugging
-			System.out.printf("%1s %20s%n", "PLAYER", " HIGHSCORE");
-			resultSet = statement.executeQuery(sql);
-			while (resultSet.next()) { // Move the cursor to the next row
-				System.out.println(
-						resultSet.getString("playerName") + ",            " + resultSet.getString("highscore"));
+		inGameOpenConn();
+		
+			try {
+				statement = connect.createStatement();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			resultSet.close();
-		} catch (SQLException e) {
-			// Handle errors for JDBC
-			System.out.printf("Something went wrong: ", e);		} finally {
+			// String sql = "SELECT id,playerName ,highscore,saldo FROM BlackJack";
+			System.out.println();
+			String sql = ("SELECT playerName, highscore FROM BlackJack \r\n" + " ORDER BY highscore DESC");
+		
+			System.out.printf("%1s %20s%n", "PLAYER", " HIGHSCORE");
 			try {
-				resultSet.close();
+				resultSet = statement.executeQuery(sql);
 			} catch (SQLException e) {
-				System.out.printf("Something went wrong: ", e);			}
+				System.out.printf("Somthing went wrong:(", e);
+			}
 			try {
-				statement.close();
+				while (resultSet.next()) { // Move the cursor to the next row
+					System.out.println(
+							resultSet.getString("playerName") + ",            " + resultSet.getString("highscore"));
+				}
 			} catch (SQLException e) {
-				System.out.printf("Something went wrong: ", e);			}
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				System.out.printf("Something went wrong: ", e);			}
-		}
+				System.out.printf("Somthing went wrong:(", e);
+			}
+			inGameCloseConn();
 	}
 
 	// Player update the saldo 29 dec
